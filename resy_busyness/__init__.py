@@ -1,1 +1,1 @@
-"""Resy busyness: how booked is each San Francisco restaurant for a party of two."""
+"""Resy busyness: how booked each San Francisco restaurant is for a party of two."""

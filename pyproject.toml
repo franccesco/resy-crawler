@@ -20,3 +20,42 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["resy_busyness"]
+
+[tool.ruff.lint]
+preview = true
+select = [
+  "E",    # pycodestyle — hard PEP 8 violations (indentation, spacing, etc.).
+  "W",    # pycodestyle warnings — softer style nits you still want fixed.
+  "F",    # pyflakes — real code errors: undefined names, unused vars & imports.
+  "I",    # isort — keep your import blocks deterministically sorted/grouped.
+  "B",    # bugbear — likely bugs and nasty edge-cases (mutable defaults, etc.).
+  "C4",   # comprehensions — suggest faster/cleaner list- & dict-comps.
+  "UP",   # pyupgrade — auto-rewrite code to the newest-supported Python syntax.
+  "complex-structure", # mccabe — flag functions whose cyclomatic complexity balloons.
+  "SIM",  # simplify — call out over-engineered constructs; prefer the obvious one-liner.
+  "N",    # pep8-naming — enforce PEP 8 names for classes, funcs, vars, etc.
+  "RUF",  # Ruff-native extras — Ruff-only correctness/perf rules (a la "unicorn").
+  "FAST", # fastapi — idiomatic FastAPI patterns and anti-pattern detection.
+  "DOC",  # pydoclint — Google/Numpy docstring section order & completeness.
+  "D",    # pydocstyle — PEP 257 docstring formatting conformance.
+  "ARG",  # unused-arguments — catch never-used *args/**kwargs/params.
+  "PERF", # perflint — flag obvious performance foot-guns (e.g., `list()` in loops).
+]
+ignore = ["incorrect-blank-line-before-class", "multi-line-summary-first-line", "multi-line-summary-second-line"]
+
+[tool.ruff.lint.mccabe]
+# Maximum complexity allowed (default is 10)
+max-complexity = 10
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pyright]
+typeCheckingMode = "strict"
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.40.0",
+    "ruff>=0.16.6",
+]
