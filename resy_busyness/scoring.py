@@ -68,6 +68,23 @@ def venue_attrs(hit: dict[str, Any]) -> dict[str, Any]:
     return attrs
 
 
+# ---- rating tier -----------------------------------------------------------------
+
+RATING_TIERS = [("S", 4.85), ("A", 4.70), ("B", 4.55), ("C", 4.40), ("D", 4.00), ("F", 0.0)]
+MIN_REVIEWS_FOR_TIER = 20
+
+
+def rating_tier(avg: float | None, count: int | None) -> str | None:
+    """Letter for Resy's 5-point average. Resy averages cluster between 4.4 and 4.9, so the cuts are
+    tight at the top: S is the top tenth of SF venues, A the next two fifths. None below 20 reviews."""
+    if avg is None or (count or 0) < MIN_REVIEWS_FOR_TIER:
+        return None
+    for letter, floor in RATING_TIERS:
+        if avg >= floor:
+            return letter
+    return "F"
+
+
 # ---- scoring (read time) ----------------------------------------------------------
 
 def _minutes(hhmm: str) -> int:

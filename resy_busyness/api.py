@@ -18,7 +18,7 @@ from .models import (
     ExclusionReason, LogLine, NightScore, ResultsResponse, RunDetail, RunParams, RunStatus, RunSummary, SchedulerStatus,
     ScoringParams, VenueHistoryRow, VenueResult, VenueWindows, WindowNight, WindowsResponse,
 )
-from .scoring import SERVICES, classify, score_night
+from .scoring import SERVICES, classify, rating_tier, score_night
 
 
 @asynccontextmanager
@@ -125,7 +125,7 @@ def _venue_result(conn, run_id: int, r: dict) -> VenueResult:
     return VenueResult(
         rank=r["rank"], venue_id=r["venue_id"], name=v.get("name") or str(r["venue_id"]), url=v.get("url"),
         neighborhood=v.get("neighborhood"), cuisine=v.get("cuisine"), price=v.get("price"), phone=v.get("phone"), rating_avg=avg, rating_count=count,
-        score=r["score"], days_scored=r["days_scored"], taken_total=r["taken_total"], boxes_total=r["boxes_total"],
+        rating_tier=rating_tier(avg, count), score=r["score"], days_scored=r["days_scored"], taken_total=r["taken_total"], boxes_total=r["boxes_total"],
         nights=[NightScore(day=n["day"], boxes=n["boxes"], open_boxes=n["open_boxes"], taken=n["taken"],
                            ratio=(round(n["taken"] / n["boxes"], 4) if n["boxes"] else None), open_times=n["open_times"], window=n["window"]) for n in r["nights"]],
         verified_far_out_open=r["far"]["open_boxes"] if r["far"] else None,
@@ -173,11 +173,11 @@ def results_csv(run_id: int | None = None, sp: ScoringParams = Depends(scoring_p
     w = csv.writer(buf)
     w.writerow([f"# run {res.run_id} computed {res.computed_at} · scoring: party_size={sp.party_size} service={sp.service} grid={sp.grid}min min_nights={sp.min_nights}"])
     w.writerow(["rank", "venue_id", "name", "neighborhood", "cuisine", "price", "score", "days_scored", "taken_total", "boxes_total",
-                "far_out_open_boxes", "excluded", "reason", "evidence", "rating_avg", "rating_count", "url", *[f"taken_over_boxes_{d}" for d in days], *[f"open_times_{d}" for d in days]])
+                "far_out_open_boxes", "excluded", "reason", "evidence", "rating_tier", "rating_avg", "rating_count", "url", *[f"taken_over_boxes_{d}" for d in days], *[f"open_times_{d}" for d in days]])
     for r in res.rows:
         by_day = {n.day.isoformat(): n for n in r.nights}
         w.writerow([r.rank, r.venue_id, r.name, r.neighborhood, r.cuisine, r.price, r.score, r.days_scored, r.taken_total, r.boxes_total,
-                    r.verified_far_out_open, int(r.excluded), r.reason.value if r.reason else "", r.evidence, r.rating_avg, r.rating_count, r.url,
+                    r.verified_far_out_open, int(r.excluded), r.reason.value if r.reason else "", r.evidence, r.rating_tier, r.rating_avg, r.rating_count, r.url,
                     *[(f"{by_day[d].taken}/{by_day[d].boxes}" if d in by_day and by_day[d].boxes else "") for d in days],
                     *[(" ".join(by_day[d].open_times) if d in by_day else "") for d in days]])
     buf.seek(0)

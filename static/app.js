@@ -41,6 +41,7 @@ const COL = {
   far: '<b>3 wks out</b>Open dinner half-hours on the verification day about three weeks ahead. Only decisive for venues sold out all week: tables here mean genuinely booked; none means no real inventory, and the venue is excluded.',
   reviews: '<b>Reviews</b>Resy review count. A rough size and volume hint for reading the score; it is not part of the score.',
   price: '<b>Price</b>Resy\'s own $ to $$$$ tier.',
+  tier: '<b>Rating</b>Resy diners\' average on a 5-point scale, as a letter. Resy averages sit between 4.4 and 4.9 for almost every venue, so the cuts are tight: S 4.85 and up (gold, about the top tenth), A 4.70, B 4.55, C 4.40, D 4.00, F below. Dashed when a venue has fewer than 20 reviews. Not part of the busyness score.',
   reason: '<b>Reason</b>Why the venue gets no score. Each reason maps to a specific field in Resy\'s response; see Evidence.',
   evidence: '<b>Evidence</b>The observation behind the exclusion, in plain words.',
 };
@@ -109,6 +110,7 @@ async function loadResults() {
   $('n-listed').textContent = R.listed; $('n-scored').textContent = R.scored; $('n-excl').textContent = R.excluded;
   $('t-scored').textContent = R.scored; $('t-excl').textContent = R.excluded;
   $('csv').href = `/api/results.csv?run_id=${R.run_id}&${spQuery()}`;
+  $('legend-svc').textContent = R.scoring.service === 'all' ? 'seating' : R.scoring.service;
   $('res-kicker').textContent = `Results · party of ${R.scoring.party_size} · ${R.scoring.service} · ${R.rows[0]?.nights?.length ?? 7} nights · ${R.scoring.grid}-min boxes`;
   renderTable();
 }
@@ -131,7 +133,7 @@ async function toggleRow(tr) {
   document.querySelectorAll('tr.row.open').forEach((d) => d.classList.remove('open'));
   tr.classList.add('open'); state.open = id;
   const detail = document.createElement('tr'); detail.className = 'detail';
-  detail.innerHTML = `<td colspan="9" class="text-muted sub">Loading windows…</td>`;
+  detail.innerHTML = `<td colspan="10" class="text-muted sub">Loading windows…</td>`;
   tr.after(detail);
   const res = await fetch(`/api/venues/${id}/windows?run_id=${state.results.run_id}&${spQuery()}`);
   if (!res.ok) { detail.firstElementChild.textContent = (await res.json()).detail || `HTTP ${res.status}`; return; }
@@ -145,7 +147,7 @@ async function toggleRow(tr) {
       : `<span class="chip ${isNew ? 'new' : ''}" data-hc="${esc(card)}">${t}</span>`;
   };
   const nights = w.nights.filter((n) => n.open_times.length);
-  detail.innerHTML = `<td colspan="9">
+  detail.innerHTML = `<td colspan="10">
     <div class="detail-head">
       ${tel ? `<a class="phone" href="${tel}">${esc(fmtPhone(w.phone))}</a>` : '<span class="text-muted sub">No phone number on Resy</span>'}
       ${w.url ? `<a href="${esc(w.url)}" target="_blank" rel="noopener" class="sub">Open on Resy ↗</a>` : ''}
@@ -177,6 +179,12 @@ function nightCell(n) {
   return `<div style="background:${bg}" data-hc="${esc(card)}" tabindex="0"></div>`;
 }
 
+const TIER_RANGE = { S: '4.85 and up', A: '4.70 to 4.84', B: '4.55 to 4.69', C: '4.40 to 4.54', D: '4.00 to 4.39', F: 'below 4.00' };
+const tierBox = (r) => {
+  const n = (r.rating_count ?? 0).toLocaleString();
+  if (!r.rating_tier) return `<span class="tier tier-none" data-hc="${esc(`<b>No rating tier</b>${r.rating_avg != null ? `Average ${r.rating_avg.toFixed(2)} from ${n} review${r.rating_count === 1 ? '' : 's'}: fewer than 20, too few to grade.` : 'Resy shows no rating for this venue.'}`)}">–</span>`;
+  return `<span class="tier tier-${r.rating_tier}" data-hc="${esc(`<b>${r.rating_tier} · ${r.rating_avg.toFixed(2)} / 5</b>${n} Resy reviews. ${r.rating_tier} covers averages ${TIER_RANGE[r.rating_tier]}.<div class=muted>Rating is context for the busyness score, not an input to it.</div>`)}">${r.rating_tier}</span>`;
+};
 const who = (r) => `<td><div style="font-weight:600">${r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${esc(r.name)}</a>` : esc(r.name)}</div><div class="text-muted sub">${esc(r.neighborhood || '—')} · ${esc(r.cuisine || '—')}</div></td>`;
 function renderTable() {
   const R = state.results; if (!R) return;
@@ -188,11 +196,12 @@ function renderTable() {
     const top = rows.length ? rows[0].score : 1;
     $('results-body').innerHTML = `
       <table class="table"><thead><tr>
-        ${th('#', COL.rank, '', '44px')}${th('Restaurant', COL.venue)}${th('Score ↓', COL.score, '', '170px')}${th('Nights · taken share', COL.nights, '', '200px')}
+        ${th('#', COL.rank, '', '44px')}${th('Restaurant', COL.venue)}${th('Rating', COL.tier, '', '64px')}${th('Score ↓', COL.score, '', '170px')}${th('Nights · taken share', COL.nights, '', '200px')}
         ${th('Taken / boxes', COL.taken, 'num', '120px')}${th('Nights', COL.ncount, 'num', '80px')}${th('3 wks out', COL.far, 'num', '100px')}${th('Reviews', COL.reviews, 'num', '90px')}${th('Price', COL.price, 'num', '70px')}
       </tr></thead><tbody>
       ${rows.map((r) => `<tr class="row ${state.open === r.venue_id ? 'open' : ''}" data-id="${r.venue_id}" tabindex="0">
         <td class="text-muted rank">${r.rank}</td>${who(r)}
+        <td>${tierBox(r)}</td>
         <td><div class="score-cell"><div class="track"><div class="fill ${r.score >= 0.9 ? 'top' : ''}" style="width:${Math.round(r.score * 100)}%"></div></div><span>${r.score.toFixed(2)}</span></div>
             ${r.evidence ? `<div class="text-muted sub" style="margin-top:4px">${esc(r.evidence)}</div>` : ''}</td>
         <td><div class="nights">${r.nights.map(nightCell).join('')}</div><div class="text-muted sub" style="margin-top:3px">${r.nights[0]?.day.slice(5)} → ${r.nights[r.nights.length - 1]?.day.slice(5)}</div></td>
@@ -208,9 +217,10 @@ function renderTable() {
     const label = { closed: 'Closed', other_platform: 'Other platform', events_only: 'Events only', no_service: 'No service for this party', no_inventory: 'No inventory', insufficient_data: 'Insufficient data' };
     $('results-body').innerHTML = `
       <p class="text-muted" style="max-width:70ch;margin-bottom:var(--space-4)">These venues show no availability for reasons other than demand. They get no score and no rank, so they cannot pass for sold-out.</p>
-      <table class="table"><thead><tr>${th('#', '<b>#</b>Position in this list only; excluded venues are not ranked.', '', '44px')}${th('Restaurant', COL.venue)}${th('Reason', COL.reason, '', '160px')}${th('Evidence', COL.evidence)}${th('Nights', COL.nights, '', '200px')}${th('Price', COL.price, 'num', '70px')}</tr></thead><tbody>
+      <table class="table"><thead><tr>${th('#', '<b>#</b>Position in this list only; excluded venues are not ranked.', '', '44px')}${th('Restaurant', COL.venue)}${th('Rating', COL.tier, '', '64px')}${th('Reason', COL.reason, '', '160px')}${th('Evidence', COL.evidence)}${th('Nights', COL.nights, '', '200px')}${th('Price', COL.price, 'num', '70px')}</tr></thead><tbody>
       ${rows.map((r, i) => `<tr class="row" data-id="${r.venue_id}" tabindex="0">
         <td class="text-muted rank">${i + 1}</td>${who(r)}
+        <td>${tierBox(r)}</td>
         <td><span class="tag tag-neutral">${label[r.reason] || esc(r.reason)}</span></td>
         <td class="text-muted" style="font-size:13px">${esc(r.evidence)}</td>
         <td><div class="nights">${r.nights.map(nightCell).join('')}</div></td>

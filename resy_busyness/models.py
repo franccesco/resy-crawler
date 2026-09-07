@@ -98,6 +98,7 @@ class VenueResult(BaseModel):
     phone: str | None
     rating_avg: float | None
     rating_count: int | None
+    rating_tier: str | None = Field(description="S/A/B/C/D/F from Resy's average; None under 20 reviews")
     score: float | None = Field(description="Mean of nightly taken/boxes over scored nights, 0 = wide open, 1 = sold out")
     days_scored: int
     taken_total: int

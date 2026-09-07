@@ -27,6 +27,14 @@
   .hovercard .muted{color:color-mix(in srgb, var(--color-text) 60%, transparent);margin-top:6px}
   .table th.num{text-align:right}
   .table th .hint{white-space:nowrap}
+  .tier{display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:15px;cursor:help}
+  .tier-S{background:#d4a017;color:#201e1d}
+  .tier-A{background:var(--color-accent);color:var(--color-bg)}
+  .tier-B{background:var(--color-accent-300);color:var(--color-accent-900)}
+  .tier-C{background:var(--color-neutral-300);color:var(--color-neutral-900)}
+  .tier-D{background:var(--color-neutral-200);color:var(--color-neutral-800)}
+  .tier-F{background:var(--color-neutral-800);color:var(--color-bg)}
+  .tier-none{border:1px dashed var(--color-divider);color:var(--color-neutral-600);font-size:12px}
   .chips{display:flex;flex-wrap:wrap;gap:4px}
   .chip{font-family:ui-monospace,Menlo,monospace;font-size:11px;padding:2px 6px;border:1px solid var(--color-divider);background:var(--color-surface)}
   .chip.new{background:var(--color-accent);color:var(--color-bg);border-color:var(--color-accent)}
@@ -155,7 +163,7 @@
         <span><i style="background:var(--color-accent)"></i>All half-hours taken</span>
         <span><i style="background:color-mix(in srgb, var(--color-accent) 50%, var(--color-surface))"></i>Half taken</span>
         <span><i style="background:var(--color-surface)"></i>Wide open</span>
-        <span><i style="background:repeating-linear-gradient(135deg,var(--color-neutral-300) 0 3px,transparent 3px 6px)"></i>No dinner window</span>
+        <span><i style="background:repeating-linear-gradient(135deg,var(--color-neutral-300) 0 3px,transparent 3px 6px)"></i>No <span id="legend-svc">dinner</span> window</span>
       </div>
       <div style="display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap">
         <div class="seg" id="sp-service" data-hc="<b>Service</b>Which seating windows count. Changes how the stored observations are read; nothing is re-ingested.">
