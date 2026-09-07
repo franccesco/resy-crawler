@@ -82,7 +82,7 @@ def scheduler_status() -> SchedulerStatus:
 
 # ---- scoring at read time -------------------------------------------------------
 
-def scoring_params(party_size: int = Query(2, ge=1), service: Literal["dinner", "lunch", "brunch", "breakfast", "all"] = "dinner",
+def scoring_params(party_size: int = Query(settings.party_size, ge=1), service: Literal["dinner", "lunch", "brunch", "breakfast", "all"] = "dinner",
                    grid: int = Query(30, description="15 or 30"), min_nights: int = Query(2, ge=1)) -> ScoringParams:
     if grid not in (15, 30):
         raise HTTPException(422, "grid must be 15 or 30")
@@ -124,7 +124,7 @@ def _venue_result(conn, run_id: int, r: dict) -> VenueResult:
     avg, count = db.rating(conn, run_id, r["venue_id"])
     return VenueResult(
         rank=r["rank"], venue_id=r["venue_id"], name=v.get("name") or str(r["venue_id"]), url=v.get("url"),
-        neighborhood=v.get("neighborhood"), cuisine=v.get("cuisine"), price=v.get("price"), rating_avg=avg, rating_count=count,
+        neighborhood=v.get("neighborhood"), cuisine=v.get("cuisine"), price=v.get("price"), phone=v.get("phone"), rating_avg=avg, rating_count=count,
         score=r["score"], days_scored=r["days_scored"], taken_total=r["taken_total"], boxes_total=r["boxes_total"],
         nights=[NightScore(day=n["day"], boxes=n["boxes"], open_boxes=n["open_boxes"], taken=n["taken"],
                            ratio=(round(n["taken"] / n["boxes"], 4) if n["boxes"] else None), open_times=n["open_times"], window=n["window"]) for n in r["nights"]],
@@ -187,31 +187,46 @@ def results_csv(run_id: int | None = None, sp: ScoringParams = Depends(scoring_p
 
 # ---- windows: where the exclusive places have tables ---------------------------------
 
+def _venue_windows(conn, run, r: dict, sp: ScoringParams) -> VenueWindows:
+    svc_ids = None if sp.service == "all" else {SERVICES[sp.service]}
+    nights = []
+    for n in r["nights"]:
+        if not n["boxes"]:
+            continue
+        prev = db.previous_state(conn, run["id"], r["venue_id"], n["day"], sp.party_size)
+        prev_open = set(score_night(json.loads(prev["state_json"]), svc_ids, sp.grid)["open_times"]) if prev else set()
+        new_times = [t for t in n["open_times"] if t not in prev_open] if prev else []
+        nights.append(WindowNight(day=n["day"], window=n["window"], open_times=n["open_times"], new_times=new_times,
+                                  previous_seen_at=prev["valid_to"] if prev else None))
+    v = db.venue_as_of_run(conn, run["id"], r["venue_id"]) or {}
+    return VenueWindows(rank=r["rank"], venue_id=r["venue_id"], name=v.get("name") or str(r["venue_id"]), url=v.get("url"), phone=v.get("phone"),
+                        neighborhood=v.get("neighborhood"), cuisine=v.get("cuisine"), price=v.get("price"), score=r["score"],
+                        nights=nights, open_total=sum(len(x.open_times) for x in nights), new_total=sum(len(x.new_times) for x in nights))
+
+
 @app.get("/api/windows", response_model=WindowsResponse)
 def windows(run_id: int | None = None, min_score: float = Query(0.7, ge=0, le=1), sp: ScoringParams = Depends(scoring_params)) -> WindowsResponse:
     conn = db.connect()
     try:
         run = _resolve_run(conn, run_id)
-        rows, days, _ = _compute(conn, run, sp)
-        svc_ids = None if sp.service == "all" else {SERVICES[sp.service]}
-        out = []
-        for r in rows:
-            if r["excluded"] or r["score"] < min_score:
-                continue
-            nights = []
-            for n in r["nights"]:
-                if not n["boxes"]:
-                    continue
-                prev = db.previous_state(conn, run["id"], r["venue_id"], n["day"], sp.party_size)
-                prev_open = set(score_night(json.loads(prev["state_json"]), svc_ids, sp.grid)["open_times"]) if prev else set()
-                new_times = [t for t in n["open_times"] if t not in prev_open] if prev else []
-                nights.append(WindowNight(day=n["day"], window=n["window"], open_times=n["open_times"], new_times=new_times,
-                                          previous_seen_at=prev["valid_to"] if prev else None))
-            v = db.venue_as_of_run(conn, run["id"], r["venue_id"]) or {}
-            out.append(VenueWindows(rank=r["rank"], venue_id=r["venue_id"], name=v.get("name") or str(r["venue_id"]), url=v.get("url"),
-                                    neighborhood=v.get("neighborhood"), cuisine=v.get("cuisine"), price=v.get("price"), score=r["score"],
-                                    nights=nights, open_total=sum(len(x.open_times) for x in nights), new_total=sum(len(x.new_times) for x in nights)))
+        rows, _, _ = _compute(conn, run, sp)
+        out = [_venue_windows(conn, run, r, sp) for r in rows if not r["excluded"] and r["score"] >= min_score]
         return WindowsResponse(run_id=run["id"], computed_at=run["finished_at"] or run["started_at"], scoring=sp, min_score=min_score, rows=out)
+    finally:
+        conn.close()
+
+
+@app.get("/api/venues/{venue_id}/windows", response_model=VenueWindows)
+def venue_windows(venue_id: int, run_id: int | None = None, sp: ScoringParams = Depends(scoring_params)) -> VenueWindows:
+    """Open boxes per night for one venue, with the ones that appeared since the previous snapshot."""
+    conn = db.connect()
+    try:
+        run = _resolve_run(conn, run_id)
+        rows, _, _ = _compute(conn, run, sp)
+        match = [r for r in rows if r["venue_id"] == venue_id]
+        if not match:
+            raise HTTPException(404, "Venue not in this run")
+        return _venue_windows(conn, run, match[0], sp)
     finally:
         conn.close()
 

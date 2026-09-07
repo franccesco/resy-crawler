@@ -74,11 +74,12 @@ boxes per night, open times on hover) are shown next to every score.
 ## Why the score exists
 
 The score is a filter, not the goal. As a customer I want tables at places that are
-hard to get into, so the score ranks how exclusive a restaurant is this week, and
-the **Windows** view then lists, for restaurants above a threshold, every half-hour
-still bookable and flags the ones that appeared since the previous snapshot. Those
-are cancellations and releases: the moments to book. Hourly snapshots exist so that
-list is never more than an hour stale.
+hard to get into, so the score ranks how exclusive a restaurant is this week.
+Clicking a row expands it into every half-hour still bookable there, night by night,
+with the ones that appeared since the previous snapshot marked in red. Those are
+cancellations and releases: the moments to book, and each time is a link that dials
+the restaurant's phone number as Resy lists it. Hourly snapshots exist so that list
+is never more than an hour stale.
 
 ## Scoring is applied when you read, not when you ingest
 

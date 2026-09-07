@@ -95,6 +95,7 @@ class VenueResult(BaseModel):
     neighborhood: str | None
     cuisine: str | None
     price: str | None
+    phone: str | None
     rating_avg: float | None
     rating_count: int | None
     score: float | None = Field(description="Mean of nightly taken/boxes over scored nights, 0 = wide open, 1 = sold out")
@@ -128,14 +129,15 @@ class WindowNight(BaseModel):
 
 
 class VenueWindows(BaseModel):
-    rank: int
+    rank: int | None
     venue_id: int
     name: str
     url: str | None
+    phone: str | None
     neighborhood: str | None
     cuisine: str | None
     price: str | None
-    score: float
+    score: float | None
     nights: list[WindowNight]
     open_total: int
     new_total: int

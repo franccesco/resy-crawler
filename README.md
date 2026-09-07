@@ -40,7 +40,8 @@ party size. The API process schedules a run every hour (`RUN_INTERVAL_MINUTES`,
 | GET | `/api/scheduler` | Interval, next run, active run. |
 | GET | `/api/results?run_id=&party_size=2&service=dinner&grid=30&min_nights=2&view=&q=` | Ranked table, scored at read time from the stored observations. Defaults to the latest finished run. |
 | GET | `/api/results.csv?…` | Same as CSV; the first line records the scoring parameters. |
-| GET | `/api/windows?min_score=0.7&party_size=2&service=dinner&grid=30` | Exclusive restaurants with open boxes, and which boxes appeared since the previous snapshot. |
+| GET | `/api/windows?min_score=0.7&service=dinner&grid=30` | Exclusive restaurants with open boxes, and which boxes appeared since the previous snapshot. |
+| GET | `/api/venues/{id}/windows?service=&grid=` | Same for one venue, with its phone number; this is what an expanded row shows. |
 | GET | `/api/venues/{id}/history?party_size=` | SCD2 version history of a venue's nightly observations. |
 
 ## Storage

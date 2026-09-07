@@ -1,7 +1,7 @@
 /* Resy SF Busyness — plain JS over the FastAPI endpoints. */
 const $ = (id) => document.getElementById(id);
-const state = { tab: 'scored', results: null, windows: null, run: null, poll: null, sp: { party_size: 2, service: 'dinner', grid: 30 } };
-const spQuery = () => `party_size=${state.sp.party_size}&service=${state.sp.service}&grid=${state.sp.grid}`;
+const state = { tab: 'scored', results: null, run: null, poll: null, open: null, sp: { service: 'dinner', grid: 30 } };
+const spQuery = () => `service=${state.sp.service}&grid=${state.sp.grid}`;
 
 function route() {
   const screen = location.hash === '#run' ? 'run' : 'results';
@@ -82,7 +82,7 @@ async function showRun(id) {
   if (r.finished_at) $('snapshot').textContent = `Snapshot · run ${r.id} · ${fmtTs(r.finished_at)}`;
   clearTimeout(state.poll);
   if (r.status === 'running' || r.status === 'queued') state.poll = setTimeout(() => showRun(id), 1500);
-  else if (r.status === 'done') { state.results = null; state.windows = null; }
+  else if (r.status === 'done') { state.results = null; }
 }
 
 $('start').addEventListener('click', async () => {
@@ -103,34 +103,66 @@ async function loadResults() {
     const res = await fetch(`/api/results?${spQuery()}`);
     if (!res.ok) { $('results-body').innerHTML = `<p class="text-muted empty">${esc((await res.json()).detail)} <a href="#run">Go to Run</a>.</p>`; return; }
     state.results = await res.json();
-    state.windows = null;
   }
   const R = state.results;
   $('snapshot').textContent = `Snapshot · run ${R.run_id} · ${fmtTs(R.computed_at)}`;
   $('n-listed').textContent = R.listed; $('n-scored').textContent = R.scored; $('n-excl').textContent = R.excluded;
   $('t-scored').textContent = R.scored; $('t-excl').textContent = R.excluded;
   $('csv').href = `/api/results.csv?run_id=${R.run_id}&${spQuery()}`;
-  const sel = $('sp-party');
-  sel.innerHTML = R.party_sizes_available.map((n) => `<option value="${n}" ${n === R.scoring.party_size ? 'selected' : ''}>party of ${n}</option>`).join('');
   $('res-kicker').textContent = `Results · party of ${R.scoring.party_size} · ${R.scoring.service} · ${R.rows[0]?.nights?.length ?? 7} nights · ${R.scoring.grid}-min boxes`;
-  if (state.tab === 'windows') { await loadWindows(); }
   renderTable();
 }
-async function loadWindows() {
-  if (state.windows) return;
-  const res = await fetch(`/api/windows?${spQuery()}&min_score=0.7`);
-  state.windows = res.ok ? await res.json() : { rows: [] };
-  $('t-win').textContent = state.windows.rows.length;
-}
 function rescore() {
-  state.sp.party_size = +$('sp-party').value;
   state.sp.service = document.querySelector('#sp-service input:checked').value;
   state.sp.grid = +document.querySelector('#sp-grid input:checked').value;
-  state.results = null; state.windows = null;
+  state.results = null; state.open = null;
   loadResults();
 }
-$('sp-party').addEventListener('change', rescore);
 document.querySelectorAll('#sp-service input, #sp-grid input').forEach((i) => i.addEventListener('change', rescore));
+
+/* ---- expandable rows: windows for one venue, each one a phone call ---- */
+const telHref = (phone) => phone ? `tel:${phone.replace(/[^+\d]/g, '')}` : null;
+const fmtPhone = (p) => { const m = (p || '').match(/^\+1(\d{3})(\d{3})(\d{4})$/); return m ? `(${m[1]}) ${m[2]}-${m[3]}` : (p || ''); };
+async function toggleRow(tr) {
+  const id = +tr.dataset.id;
+  const existing = tr.nextElementSibling;
+  if (existing && existing.classList.contains('detail')) { existing.remove(); tr.classList.remove('open'); state.open = null; return; }
+  document.querySelectorAll('tr.detail').forEach((d) => d.remove());
+  document.querySelectorAll('tr.row.open').forEach((d) => d.classList.remove('open'));
+  tr.classList.add('open'); state.open = id;
+  const detail = document.createElement('tr'); detail.className = 'detail';
+  detail.innerHTML = `<td colspan="9" class="text-muted sub">Loading windows…</td>`;
+  tr.after(detail);
+  const res = await fetch(`/api/venues/${id}/windows?run_id=${state.results.run_id}&${spQuery()}`);
+  if (!res.ok) { detail.firstElementChild.textContent = (await res.json()).detail || `HTTP ${res.status}`; return; }
+  const w = await res.json();
+  const tel = telHref(w.phone);
+  const chip = (n, t) => {
+    const isNew = n.new_times.includes(t);
+    const card = `<b>${dayLabel(n.day)} · ${t}</b>${n.window || ''}<div class=muted>${isNew ? `Not open in the previous snapshot${n.previous_seen_at ? ` (${fmtTs(n.previous_seen_at)})` : ''}. ` : 'Already open last snapshot. '}${tel ? 'Click to call.' : 'No phone listed.'}</div>`;
+    return tel
+      ? `<a class="chip ${isNew ? 'new' : ''}" href="${tel}" data-hc="${esc(card)}">${t}</a>`
+      : `<span class="chip ${isNew ? 'new' : ''}" data-hc="${esc(card)}">${t}</span>`;
+  };
+  const nights = w.nights.filter((n) => n.open_times.length);
+  detail.innerHTML = `<td colspan="9">
+    <div class="detail-head">
+      ${tel ? `<a class="phone" href="${tel}">${esc(fmtPhone(w.phone))}</a>` : '<span class="text-muted sub">No phone number on Resy</span>'}
+      ${w.url ? `<a href="${esc(w.url)}" target="_blank" rel="noopener" class="sub">Open on Resy ↗</a>` : ''}
+      <span class="sub text-muted">${w.open_total} open ${w.scoring?.service || ''} half-hour${w.open_total === 1 ? '' : 's'} this week for a party of ${state.results.scoring.party_size}${w.new_total ? ` · <span style="color:var(--color-accent)">${w.new_total} new since last snapshot</span>` : ''}</span>
+      <span class="sub text-muted" style="margin-left:auto">Click a time to call${tel ? '' : ' (unavailable)'}</span>
+    </div>
+    ${nights.length ? nights.map((n) => `<div class="night-row"><span class="sub text-muted">${dayLabel(n.day)}</span><span class="chips">${n.open_times.map((t) => chip(n, t)).join('')}</span></div>`).join('') : '<div class="night-row"><span class="sub text-muted">Nothing open</span><span class="sub text-muted">No bookable half-hours this week under the current scoring.</span></div>'}
+  </td>`;
+}
+document.addEventListener('click', (e) => {
+  if (e.target.closest('a')) return;
+  const tr = e.target.closest('tr.row'); if (tr) toggleRow(tr);
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const tr = e.target.closest && e.target.closest('tr.row'); if (tr) { e.preventDefault(); toggleRow(tr); }
+});
 
 const dayLabel = (d) => new Date(`${d}T12:00:00`).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 function nightCell(n) {
@@ -150,7 +182,6 @@ function renderTable() {
   const R = state.results; if (!R) return;
   const q = $('q').value.trim().toLowerCase();
   document.querySelectorAll('.tabs a').forEach((a) => a.classList.toggle('on', a.dataset.tab === state.tab));
-  if (state.tab === 'windows') { renderWindows(q); return; }
   let rows = R.rows.filter((r) => (state.tab === 'scored' ? !r.excluded : r.excluded));
   if (q) rows = rows.filter((r) => [r.name, r.neighborhood, r.cuisine, r.reason].some((v) => (v || '').toLowerCase().includes(q)));
   if (state.tab === 'scored') {
@@ -160,7 +191,7 @@ function renderTable() {
         ${th('#', COL.rank, '', '44px')}${th('Restaurant', COL.venue)}${th('Score ↓', COL.score, '', '170px')}${th('Nights · taken share', COL.nights, '', '200px')}
         ${th('Taken / boxes', COL.taken, 'num', '120px')}${th('Nights', COL.ncount, 'num', '80px')}${th('3 wks out', COL.far, 'num', '100px')}${th('Reviews', COL.reviews, 'num', '90px')}${th('Price', COL.price, 'num', '70px')}
       </tr></thead><tbody>
-      ${rows.map((r) => `<tr>
+      ${rows.map((r) => `<tr class="row ${state.open === r.venue_id ? 'open' : ''}" data-id="${r.venue_id}" tabindex="0">
         <td class="text-muted rank">${r.rank}</td>${who(r)}
         <td><div class="score-cell"><div class="track"><div class="fill ${r.score >= 0.9 ? 'top' : ''}" style="width:${Math.round(r.score * 100)}%"></div></div><span>${r.score.toFixed(2)}</span></div>
             ${r.evidence ? `<div class="text-muted sub" style="margin-top:4px">${esc(r.evidence)}</div>` : ''}</td>
@@ -172,13 +203,13 @@ function renderTable() {
         <td class="num text-muted">${esc(r.price || '—')}</td>
       </tr>`).join('')}
       </tbody></table>
-      <div class="legend text-muted"><span style="margin-left:auto">Showing ${rows.length} of ${R.scored} · hover a box or a column name for details</span></div>`;
+      <div class="legend text-muted"><span style="margin-left:auto">Showing ${rows.length} of ${R.scored} · click a row for its windows · hover a box or a column name for details</span></div>`;
   } else {
     const label = { closed: 'Closed', other_platform: 'Other platform', events_only: 'Events only', no_service: 'No service for this party', no_inventory: 'No inventory', insufficient_data: 'Insufficient data' };
     $('results-body').innerHTML = `
       <p class="text-muted" style="max-width:70ch;margin-bottom:var(--space-4)">These venues show no availability for reasons other than demand. They get no score and no rank, so they cannot pass for sold-out.</p>
       <table class="table"><thead><tr>${th('#', '<b>#</b>Position in this list only; excluded venues are not ranked.', '', '44px')}${th('Restaurant', COL.venue)}${th('Reason', COL.reason, '', '160px')}${th('Evidence', COL.evidence)}${th('Nights', COL.nights, '', '200px')}${th('Price', COL.price, 'num', '70px')}</tr></thead><tbody>
-      ${rows.map((r, i) => `<tr>
+      ${rows.map((r, i) => `<tr class="row" data-id="${r.venue_id}" tabindex="0">
         <td class="text-muted rank">${i + 1}</td>${who(r)}
         <td><span class="tag tag-neutral">${label[r.reason] || esc(r.reason)}</span></td>
         <td class="text-muted" style="font-size:13px">${esc(r.evidence)}</td>
@@ -189,30 +220,7 @@ function renderTable() {
       <div class="legend text-muted"><span style="margin-left:auto">Showing ${rows.length} of ${R.excluded}</span></div>`;
   }
 }
-function renderWindows(q) {
-  const W = state.windows;
-  if (!W) { loadWindows().then(() => renderTable()); $('results-body').innerHTML = '<p class="text-muted empty">Loading windows…</p>'; return; }
-  let rows = W.rows;
-  if (q) rows = rows.filter((r) => [r.name, r.neighborhood, r.cuisine].some((v) => (v || '').toLowerCase().includes(q)));
-  $('results-body').innerHTML = `
-    <p class="text-muted" style="max-width:72ch;margin-bottom:var(--space-4)">Restaurants scoring ${W.min_score.toFixed(2)} or higher, with every ${W.scoring.service === 'all' ? '' : W.scoring.service + ' '}half-hour still bookable for a party of ${W.scoring.party_size}. A red chip appeared since the previous snapshot of that night: a cancellation or a release. That is the window.</p>
-    <table class="table"><thead><tr>
-      ${th('#', COL.rank, '', '44px')}${th('Restaurant', COL.venue)}${th('Score', COL.score, 'num', '70px')}
-      ${th('Open now', '<b>Open now</b>Bookable boxes across the week for this party size and service. Hover a chip for the night.', 'num', '90px')}
-      ${th('New', '<b>New</b>Boxes open now that were not open in the previous snapshot of the same night. Empty when this is the first snapshot of the night.', 'num', '70px')}
-      ${th('Windows by night', '<b>Windows by night</b>One line per night that has anything open. Grey chips were already open last snapshot; red chips are new.')}
-    </tr></thead><tbody>
-    ${rows.map((r) => `<tr>
-      <td class="text-muted rank">${r.rank}</td>${who(r)}
-      <td class="num">${r.score.toFixed(2)}</td>
-      <td class="num">${r.open_total}</td>
-      <td class="num" style="color:${r.new_total ? 'var(--color-accent)' : 'inherit'}">${r.new_total || '—'}</td>
-      <td>${r.nights.filter((n) => n.open_times.length).map((n) => `<div style="display:grid;grid-template-columns:110px 1fr;gap:var(--space-2);align-items:start;padding:2px 0"><span class="sub text-muted">${dayLabel(n.day)}</span><span class="chips">${n.open_times.map((t) => `<span class="chip ${n.new_times.includes(t) ? 'new' : ''}" data-hc="${esc(`<b>${dayLabel(n.day)} · ${t}</b>${n.window || ''}${n.new_times.includes(t) ? `<div class=muted>Not open in the previous snapshot${n.previous_seen_at ? ` (last seen ${fmtTs(n.previous_seen_at)})` : ''}.</div>` : '<div class=muted>Already open in the previous snapshot.</div>'}`)}">${t}</span>`).join('')}</span></div>`).join('') || '<span class="text-muted sub">Nothing open this week</span>'}</td>
-    </tr>`).join('')}
-    </tbody></table>
-    <div class="legend text-muted"><span style="margin-left:auto">Showing ${rows.length} venue(s) at or above ${W.min_score.toFixed(2)}</span></div>`;
-}
-document.querySelectorAll('.tabs a').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); state.tab = a.dataset.tab; if (state.tab === 'windows') loadWindows().then(renderTable); else renderTable(); }));
+document.querySelectorAll('.tabs a').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); state.tab = a.dataset.tab; renderTable(); }));
 $('q').addEventListener('input', renderTable);
 
 route();

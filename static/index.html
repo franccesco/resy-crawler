@@ -31,8 +31,22 @@
   .chip{font-family:ui-monospace,Menlo,monospace;font-size:11px;padding:2px 6px;border:1px solid var(--color-divider);background:var(--color-surface)}
   .chip.new{background:var(--color-accent);color:var(--color-bg);border-color:var(--color-accent)}
   .hr{margin:var(--space-6) 0 var(--space-3)}
-  .toolbar .legend{flex-basis:100%;justify-content:flex-start}
-  @media (min-width:1500px){.toolbar .legend{flex-basis:auto;margin:0 auto}}
+  .toolbar{flex-wrap:nowrap}
+  .toolbar .tabs{flex:none}
+  .toolbar .legend{flex:1;justify-content:center;min-width:0}
+  @media (max-width:1400px){.toolbar{flex-wrap:wrap}.toolbar .legend{flex-basis:100%;justify-content:flex-start;order:3}}
+  tr.row{cursor:pointer}
+  tr.row.open td{background:color-mix(in srgb, var(--color-text) 4%, transparent)}
+  tr.row td:first-child::before{content:'▸';display:inline-block;width:12px;color:var(--color-neutral-600);font-size:11px}
+  tr.row.open td:first-child::before{content:'▾'}
+  tr.detail td{background:var(--color-surface);padding:var(--space-4) var(--space-4) var(--space-4) calc(44px + var(--space-2))}
+  .detail-head{display:flex;flex-wrap:wrap;gap:var(--space-3) var(--space-6);align-items:baseline;margin-bottom:var(--space-3)}
+  .detail-head .phone{font-family:var(--font-heading);font-weight:800;font-size:17px;color:inherit;text-decoration:none}
+  .detail-head .phone:hover{color:var(--color-accent)}
+  .night-row{display:grid;grid-template-columns:120px 1fr;gap:var(--space-3);align-items:start;padding:6px 0;border-top:1px solid var(--color-divider)}
+  .chip{color:inherit;text-decoration:none}
+  a.chip:hover{border-color:var(--color-accent);color:var(--color-accent)}
+  a.chip.new:hover{background:var(--color-accent-600);color:var(--color-bg)}
   .nights div{cursor:help}
   .counters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:var(--space-6);border-top:2px solid var(--color-divider);border-bottom:2px solid var(--color-divider)}
   .counters > div{padding:var(--space-3) 0}
@@ -135,7 +149,6 @@
     <div class="toolbar">
       <div class="tabs">
         <a href="#results" data-tab="scored" class="on">Scored <span class="text-muted" id="t-scored"></span></a>
-        <a href="#results" data-tab="windows">Windows <span class="text-muted" id="t-win"></span></a>
         <a href="#results" data-tab="excluded">Excluded <span class="text-muted" id="t-excl"></span></a>
       </div>
       <div class="legend text-muted" id="legend">
@@ -145,19 +158,17 @@
         <span><i style="background:repeating-linear-gradient(135deg,var(--color-neutral-300) 0 3px,transparent 3px 6px)"></i>No dinner window</span>
       </div>
       <div style="display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap">
-        <span class="hint sub text-muted" data-hc="<b>Scoring</b>These change how the stored observations are read; nothing is re-ingested. Service picks which seating windows count. Grid is the box size: 30 minutes is Resy's seating step, 15 matches the slot times. Party size must be one the run ingested.">Score as</span>
-        <select class="input" id="sp-party" style="width:auto;min-height:32px;padding:4px 8px"></select>
-        <div class="seg" id="sp-service">
+        <div class="seg" id="sp-service" data-hc="<b>Service</b>Which seating windows count. Changes how the stored observations are read; nothing is re-ingested.">
           <label class="seg-opt"><input type="radio" name="svc" value="dinner" checked>Dinner</label>
           <label class="seg-opt"><input type="radio" name="svc" value="lunch">Lunch</label>
           <label class="seg-opt"><input type="radio" name="svc" value="brunch">Brunch</label>
           <label class="seg-opt"><input type="radio" name="svc" value="all">All</label>
         </div>
-        <div class="seg" id="sp-grid">
+        <div class="seg" id="sp-grid" data-hc="<b>Grid</b>Box size. 30 minutes is Resy's seating step; 15 matches the slot times themselves.">
           <label class="seg-opt"><input type="radio" name="grid" value="30" checked>30 min</label>
           <label class="seg-opt"><input type="radio" name="grid" value="15">15 min</label>
         </div>
-        <input class="input" id="q" placeholder="Search name, neighborhood, cuisine" style="width:220px">
+        <input class="input" id="q" placeholder="Search" style="width:150px">
         <a class="btn btn-secondary" id="csv" href="/api/results.csv">Export CSV<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg></a>
       </div>
     </div>
