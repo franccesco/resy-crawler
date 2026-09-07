@@ -41,7 +41,7 @@ const COL = {
   far: '<b>3 wks out</b>Open dinner half-hours on the verification day about three weeks ahead. Only decisive for venues sold out all week: tables here mean genuinely booked; none means no real inventory, and the venue is excluded.',
   reviews: '<b>Reviews</b>Resy review count. A rough size and volume hint for reading the score; it is not part of the score.',
   price: '<b>Price</b>Resy\'s own $ to $$$$ tier.',
-  tier: '<b>Rating</b>Resy diners\' average on a 5-point scale, as a letter. Resy averages sit between 4.4 and 4.9 for almost every venue, so the cuts are tight: S 4.85 and up (gold, about the top tenth), A 4.70, B 4.55, C 4.40, D 4.00, F below. Dashed when a venue has fewer than 20 reviews. Not part of the busyness score.',
+  tier: '<b>Rating</b>Resy diners\' average on a 5-point scale, as a letter. Resy averages sit between 4.4 and 4.9 for almost every venue, so the cuts are tight: S 4.85 and up (gold, about the top tenth), A 4.70 (green), B 4.55, C 4.40 (amber), D 4.00 (orange), F below (dark red). Colors follow a grade scale, not the page accent. Dashed when a venue has fewer than 20 reviews. Not part of the busyness score.',
   reason: '<b>Reason</b>Why the venue gets no score. Each reason maps to a specific field in Resy\'s response; see Evidence.',
   evidence: '<b>Evidence</b>The observation behind the exclusion, in plain words.',
 };
