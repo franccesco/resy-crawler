@@ -1,0 +1,143 @@
+rank,venue_id,name,neighborhood,cuisine,price,score,days_scored,taken_total,boxes_total,far_out_open_boxes,excluded,reason,evidence,rating_avg,rating_count,url,taken_over_boxes_2026-09-08,taken_over_boxes_2026-09-09,taken_over_boxes_2026-09-10,taken_over_boxes_2026-09-11,taken_over_boxes_2026-09-12,taken_over_boxes_2026-09-13,taken_over_boxes_2026-09-14
+1,339,Izakaya Rintaro,The Mission,Japanese,$$$,0.9091,6,60,66,5,0,,,4.76768,21079,https://resy.com/cities/san-francisco-ca/venues/izakaya-rintaro,,9/11,9/11,11/11,11/11,9/11,11/11
+2,544,Restaurant Chez Panisse,Berkeley,Californian,$$$$,0.8958,6,43,48,0,0,,,4.76413,9786,https://resy.com/cities/san-francisco-ca/venues/chez-panisse,5/8,7/8,7/8,8/8,8/8,,8/8
+3,6291,Flour + Water,Mission Gulch,Italian,$$,0.8857,7,62,70,3,0,,,4.71112,3479,https://resy.com/cities/san-francisco-ca/venues/flour-and-water,8/10,8/10,9/10,9/10,10/10,9/10,9/10
+4,92229,Octavia,San Francisco,New American,$$,0.86,5,41,48,0,0,,,4.84416,77,https://resy.com/cities/san-francisco-ca/venues/octavia,9/10,5/10,9/10,8/8,10/10,,
+5,73535,7 Adams,Japantown,Californian,$$,0.8312,7,53,63,6,0,,,4.5921,3773,https://resy.com/cities/san-francisco-ca/venues/7-adams,5/8,8/8,7/8,9/11,11/11,9/9,4/8
+6,93096,Mister Jiu's,Chinatown,Chinese,$$$,0.8289,5,40,48,0,0,,,4.58301,777,https://resy.com/cities/san-francisco-ca/venues/mister-jius,5/9,8/9,7/10,10/10,10/10,,
+7,2436,Utzutzu,Alameda,Sushi,$$$,0.7667,5,23,30,0,0,,,4.88953,1901,https://resy.com/cities/san-francisco-ca/venues/utzutzu,,4/6,5/6,5/6,5/6,4/6,
+8,547,Café Chez Panisse,Berkeley,American,$$$,0.7576,6,50,66,3,0,,,4.79306,31254,https://resy.com/cities/san-francisco-ca/venues/chez-panisse-cafe,8/11,8/11,8/11,9/11,9/11,,8/11
+9,54469,Penny Roma,Mission District,Italian,$$,0.6929,7,47,68,8,0,,,4.64506,5970,https://resy.com/cities/san-francisco-ca/venues/penny-roma,7/10,6/10,7/10,8/10,8/10,6/8,5/10
+10,82961,mijoté,Mission District,French,$$$,0.6222,5,28,45,,0,,,4.69849,1194,https://resy.com/cities/san-francisco-ca/venues/mijote,,,5/9,7/9,9/9,6/9,1/9
+11,984,Kin Khao,Union Square,Thai,$$,0.6214,7,38,60,5,0,,,4.51183,14618,https://resy.com/cities/san-francisco-ca/venues/kin-khao,4/8,4/8,7/8,8/10,8/10,4/8,3/8
+12,98460,SAAM,China Basin,Thai,$,0.6042,6,29,48,7,0,,,4.52995,217,https://resy.com/cities/san-francisco-ca/venues/saam-ca,5/8,2/8,4/8,7/8,8/8,,3/8
+13,76035,Doma Sushi Bar,Bernal Heights,Japanese,$$,0.6,5,15,25,0,0,,,4.77622,143,https://resy.com/cities/san-francisco-ca/venues/doma-sushi-bar,3/5,3/5,3/5,3/5,3/5,,
+14,60292,Azalina's,Tenderloin,Malaysian,$$,0.5625,4,18,32,0,0,,,4.76503,915,https://resy.com/cities/san-francisco-ca/venues/azalinas,,8/8,2/8,8/8,0/8,,
+15,6707,Nari,Japantown,Thai,$$,0.5595,7,33,58,6,0,,,4.47699,7193,https://resy.com/cities/san-francisco-ca/venues/nari,5/8,4/8,4/8,7/9,8/9,3/8,2/8
+16,96916,Zentarou Sushi and Sake Bar,San Francisco,Japanese,$$$,0.5354,5,25,47,5,0,,,4.88764,178,https://resy.com/cities/san-francisco-ca/venues/zentarou-sushi-and-sake-bar,4/9,4/9,5/9,5/11,,,7/9
+17,74314,Popi's Oysterette,Marina District,Seafood,$,0.5,7,28,56,4,0,,,4.63658,421,https://resy.com/cities/san-francisco-ca/venues/popis-oysterette,4/8,4/8,4/8,4/8,4/8,4/8,4/8
+18,8544,Social Bird,Downtown,American,$,0.4843,7,45,93,7,0,,,4.79832,13725,https://resy.com/cities/san-francisco-ca/venues/social-bird,6/13,7/13,6/13,7/14,6/14,7/13,6/13
+19,58585,Liholiho Yacht Club,Lower Nob Hill,Asian,$,0.4259,6,23,54,7,0,,,4.80929,5186,https://resy.com/cities/san-francisco-ca/venues/liholiho-yacht-club,3/9,2/9,3/9,6/9,6/9,,3/9
+20,5891,Gary Danko,Russian Hill/Fisherman's Wharf,Californian,$$$,0.4,5,22,55,10,0,,,4.75182,1644,https://resy.com/cities/san-francisco-ca/venues/gary-danko,,,5/11,6/11,9/11,1/11,1/11
+21,54263,Chīsai Sushi Club,The Mission,Sushi,$$$,0.3997,7,27,67,6,0,,,4.87186,2747,https://resy.com/cities/san-francisco-ca/venues/chisai-sushi-club,3/9,4/9,4/9,5/11,5/11,3/9,3/9
+22,2400,Iyasare,Northwest Berkeley,Japanese,$$,0.3954,7,20,51,4,0,,,4.77604,12606,https://resy.com/cities/san-francisco-ca/venues/iyasare,3/7,3/7,3/7,3/8,2/8,3/7,3/7
+23,2255,Revel Kitchen & Bar,Danville,American,$$,0.3878,7,36,93,8,0,,,4.81212,8617,https://resy.com/cities/san-francisco-ca/venues/revel-kitchen-and-bar,6/13,5/13,5/13,5/14,5/14,5/13,5/13
+24,94176,San Francisco Brewing Co,San Francisco,Pub Fare,$,0.3571,7,22,60,7,0,,,4.55556,9,https://resy.com/cities/san-francisco-ca/venues/san-francisco-brewing-co,1/8,1/8,8/8,0/10,10/10,1/8,1/8
+25,96943,Folklore,Financial District,Californian,$$$$,0.3333,3,6,18,0,0,,,4.79487,39,https://resy.com/cities/san-francisco-ca/venues/Folklore,,,0/6,0/6,6/6,,
+26,9646,Routier,Pacific Heights,Californian,$$,0.325,5,13,40,0,0,,,4.66488,2423,https://resy.com/cities/san-francisco-ca/venues/routier,,3/8,2/8,3/8,3/8,2/8,
+27,2068,Belotti Ristorante e Bottega,Rockridge,Italian,$$,0.3182,6,21,66,9,0,,,4.8537,15434,https://resy.com/cities/san-francisco-ca/venues/belotti-ristorante-e-bottega,5/11,2/11,2/11,2/11,7/11,,3/11
+28,65645,Bar Sprezzatura,San Francisco,Italian,$$,0.2937,6,29,122,5,0,,,4.5107,701,https://resy.com/cities/san-francisco-ca/venues/bar-sprezzatura,0/21,0/21,0/23,0/23,13/13,,16/21
+29,98802,Brickhouse Cafe & Bar,San Francisco,American,$,0.2708,6,11,46,0,0,,,5.0,3,https://resy.com/cities/san-francisco-ca/venues/brickhouse-cafe-and-bar,5/8,0/8,0/8,0/8,0/8,6/6,
+30,89679,Jilli - San Francisco,Mission,Contemporary Korean,$$,0.2667,5,12,43,0,0,,,4.59375,480,https://resy.com/cities/san-francisco-ca/venues/jilli-san-francisco,0/8,0/8,4/9,4/9,4/9,,
+31,80124,Napizza,Marina District,Italian,$,0.2558,7,28,109,15,0,,,4.54601,163,https://resy.com/cities/san-francisco-ca/venues/napizza,0/15,0/15,4/15,8/14,8/14,8/21,0/15
+32,80908,Kaiyo Restaurant,SoMa,Nikkei,$$,0.247,6,15,62,0,0,,,4.38224,259,https://resy.com/cities/san-francisco-ca/venues/kaiyo-restaurant,1/10,1/10,1/10,1/11,1/11,,10/10
+33,73271,Angie's Pizza,Mission District,Pizza,$$,0.237,6,13,56,8,0,,,4.79001,881,https://resy.com/cities/san-francisco-ca/venues/angies-pizza,,5/9,3/9,2/10,0/10,2/9,1/9
+34,72776,Osso Steakhouse,San Francisco,Steakhouse,$$$,0.2349,7,15,65,8,0,,,4.40385,104,https://resy.com/cities/san-francisco-ca/venues/jsb-osso-steakhouse,1/9,1/9,1/9,1/10,1/10,1/9,9/9
+35,7501,Brenda's French Soul Food,Civic Center,Southern,$,0.225,4,9,37,0,0,,,4.76111,4094,https://resy.com/cities/san-francisco-ca/venues/brendas-french-soul-food,,,3/10,3/10,3/10,0/7,
+36,8486,Prubechu,Mission District,Chamorro,$$,0.225,4,9,40,0,0,,,4.73277,3193,https://resy.com/cities/san-francisco-ca/venues/prubechu,,2/10,2/10,2/10,3/10,,
+37,5462,The Wolf,Piedmont,Californian,$$,0.2222,6,12,54,8,0,,,4.79443,9121,https://resy.com/cities/san-francisco-ca/venues/the-wolf,3/9,3/9,1/9,2/9,2/9,,1/9
+38,5830,Trattoria Servino,Tiburon,Italian,$$,0.2208,7,16,72,8,0,,,4.82039,2551,https://resy.com/cities/san-francisco-ca/venues/servino,2/10,2/10,2/10,3/11,3/11,2/10,2/10
+39,59875,Kaiyo Rooftop Bar,SoMa,Nikkei,$,0.2117,7,17,90,10,0,,,3.9602,2387,https://resy.com/cities/san-francisco-ca/venues/kaiyo-rooftop-bar,0/12,5/14,0/12,1/16,1/16,0/10,10/10
+40,91684,Dragon Well,Marina District,Chinese,$$,0.2,5,10,50,0,0,,,4.65854,82,https://resy.com/cities/san-francisco-ca/venues/dragon-well,,2/10,2/10,2/10,2/10,2/10,
+41,7074,Heirloom Cafe SF,Mission District,Californian,$$,0.1917,4,7,37,0,0,,,4.89111,2856,https://resy.com/cities/san-francisco-ca/venues/heirloom-cafe,2/9,2/9,2/9,1/10,,,
+42,2241,Esin Restaurant & Bar,Danville,Californian,$$,0.1905,7,12,63,8,0,,,4.87312,17757,https://resy.com/cities/san-francisco-ca/venues/esin-restaurant-and-bar,1/9,1/9,3/9,2/9,3/9,1/9,1/9
+43,72711,Flour + Water Pizzeria - North Beach,North Beach,Pizza,$$,0.1818,7,14,77,10,0,,,4.75825,2333,https://resy.com/cities/san-francisco-ca/venues/fw-pizzeria-north-beach,1/11,3/11,3/11,2/11,2/11,2/11,1/11
+44,99215,KAIYŌ Handroll Bar,San Francisco,Nikkei,$,0.1795,3,7,36,0,0,,,5.0,7,https://resy.com/cities/san-francisco-ca/venues/kaiyo-handroll-bar,,,,7/13,0/13,0/10,
+45,2566,Pearl 6101,Richmond District,Italian,$$,0.1746,7,11,63,9,0,,,4.81108,12455,https://resy.com/cities/san-francisco-ca/venues/pearl,0/9,4/9,1/9,4/9,2/9,0/9,0/9
+46,95246,Rose Pizzeria - SF,Inner Richmond,Pizza,$,0.1714,7,24,140,19,0,,,4.73414,741,https://resy.com/cities/san-francisco-ca/venues/rose-pizzeria-sf,5/20,1/20,6/20,4/20,6/20,1/20,1/20
+47,94930,Left Door,San Francisco,American,$$$,0.1697,6,13,73,0,0,,,4.65341,176,https://resy.com/cities/san-francisco-ca/venues/left-door,1/11,2/11,1/12,0/14,8/14,1/11,
+48,96532,Milos Taverna,Cow Hollow,Greek,$$$,0.1696,4,10,58,0,0,,,4.44231,52,https://resy.com/cities/san-francisco-ca/venues/milos-taverna,2/14,2/14,2/14,4/16,,,
+49,1362,Robin San Francisco,Hayes Valley,Sushi,$$$$,0.1667,5,8,48,0,0,,,4.68947,9239,https://resy.com/cities/san-francisco-ca/venues/robin-san-francisco,,3/9,0/10,3/10,2/10,0/9,
+50,61001,Besharam,Dogpatch,Indian,$$,0.1556,5,7,45,0,0,,,4.51374,2219,https://resy.com/cities/san-francisco-ca/venues/besharam,,2/9,2/9,1/9,1/9,1/9,
+51,7335,Cielito Cocina Mexicana,Downtown Danville,Mexican,$,0.1538,7,12,79,9,0,,,4.63094,3284,https://resy.com/cities/san-francisco-ca/venues/cielito-cocina-mexicana,2/11,2/11,2/11,1/11,1/13,2/11,2/11
+52,54575,Norcina,Marina,Italian & Pizza,$,0.1524,7,16,93,11,0,,,4.46078,510,https://resy.com/cities/san-francisco-ca/venues/norcina,0/11,4/15,4/15,4/15,4/15,0/11,0/11
+53,93675,Moongate Lounge,"Chinatown, San Francisco",Cocktail Bar,$,0.15,5,6,40,0,0,,,4.44,75,https://resy.com/cities/san-francisco-ca/venues/moongate-lounge,0/8,0/8,0/8,6/8,0/8,,
+54,10338,Zut! On Fourth,Berkeley,American,$$,0.1488,7,7,48,5,0,,,4.65581,6970,https://resy.com/cities/san-francisco-ca/venues/zut-tavern,1/6,1/6,1/6,1/8,1/8,1/8,1/6
+55,5227,Main Street Kitchen & Bar,Downtown,American,$$,0.1414,7,10,63,8,0,,,4.47554,3230,https://resy.com/cities/san-francisco-ca/venues/main-street-kitchen-and-bar,1/9,1/9,1/9,3/11,3/11,0/5,1/9
+56,5177,Tsunami - Panhandle,NoPa,Japanese,$$$,0.1333,5,6,45,0,0,,,4.7261,774,https://resy.com/cities/san-francisco-ca/venues/tsunami-panhandle,1/9,2/9,1/9,1/9,1/9,,
+57,49756,Moshi Moshi,Dogpatch,Japanese,$$,0.125,6,6,48,7,0,,,4.66202,1506,https://resy.com/cities/san-francisco-ca/venues/moshi-moshi,1/8,1/8,1/8,1/8,1/8,,1/8
+58,4466,Ungrafted,Dogpatch,American,$$,0.1238,5,5,41,0,0,,,4.72882,1877,https://resy.com/cities/san-francisco-ca/venues/ungrafted,1/7,1/7,1/9,1/9,1/9,,
+59,77410,Kuma Sushi + Sake (Polk St),Lower Polk,Sushi,$$,0.1143,7,8,70,9,0,,,4.83848,1003,https://resy.com/cities/san-francisco-ca/venues/kuma-sushi-and-sake,1/10,1/10,1/10,2/10,1/10,1/10,1/10
+60,82814,Prik Hom,Jordan Park,Thai,$$,0.1143,5,4,35,0,0,,,4.65144,591,https://resy.com/cities/san-francisco-ca/venues/prik-hom,,0/7,0/7,4/7,0/7,0/7,
+61,912,Gialina,Glen Park,Pizza,$$,0.1111,7,7,63,8,0,,,4.84915,3129,https://resy.com/cities/san-francisco-ca/venues/gialina,1/9,1/9,1/9,1/9,1/9,1/9,1/9
+62,92068,Elephant Sushi - Grove Street,Hayes Valley,Sushi,$,0.1111,7,7,63,8,0,,,4.54286,35,https://resy.com/cities/san-francisco-ca/venues/elephant-sushi-grove-street,1/9,1/9,1/9,1/9,1/9,1/9,1/9
+63,97921,The Front Porch,Bernal Heights,Southern,$,0.1111,7,7,63,8,0,,,4.73034,89,https://resy.com/cities/san-francisco-ca/venues/the-front-porch,1/9,1/9,1/9,1/9,1/9,1/9,1/9
+64,92060,Elephant Sushi - Hyde Street,San Francisco,Sushi,$$,0.1111,6,6,54,0,0,,,4.75581,86,https://resy.com/cities/san-francisco-ca/venues/elephant-sushi-hyde-street,1/9,1/9,1/9,1/9,1/9,1/9,
+65,30223,AltoVino,Nob Hill,Italian,$$,0.1111,5,5,45,0,0,,,4.81286,2752,https://resy.com/cities/san-francisco-ca/venues/altovino,,1/9,1/9,1/9,1/9,1/9,
+66,86860,Mestiza,SOMA,Asian,$,0.1111,5,5,45,0,0,,,4.63529,85,https://resy.com/cities/san-francisco-ca/venues/mestiza,1/9,1/9,1/9,1/9,1/9,,
+67,85013,Violet's,Central Richmond,Californian,$$,0.1053,7,7,67,8,0,,,4.65495,313,https://resy.com/cities/san-francisco-ca/venues/violets,1/9,1/9,1/9,1/11,1/11,1/9,1/9
+68,73633,Loló,Dolores Heights,Mexican,$$,0.1044,6,6,58,8,0,,,4.61129,1541,https://resy.com/cities/san-francisco-ca/venues/lolo,1/9,1/9,1/9,1/11,1/11,,1/9
+69,96141,The Martini Room at Causwells,Marina District,Cocktail Bar,$$,0.1044,3,3,29,0,0,,,5.0,1,https://resy.com/cities/san-francisco-ca/venues/the-martini-room-at-causwells,1/9,1/9,1/11,,,,
+70,80121,Amelie,San Francisco,Wine Bar,$$,0.1039,7,8,77,11,0,,,4.54593,381,https://resy.com/cities/san-francisco-ca/venues/amelie,0/11,0/11,0/11,3/11,5/11,0/11,0/11
+71,6303,Mission Chinese Food SF,Mission District,Chinese,$$,0.1,7,7,70,9,0,,,4.33498,606,https://resy.com/cities/san-francisco-ca/venues/mission-chinese-food-sf,1/10,1/10,1/10,1/10,1/10,1/10,1/10
+72,77434,Kuma on Valencia,Mission,Sushi,$$,0.1,7,7,70,9,0,,,4.78942,964,https://resy.com/cities/san-francisco-ca/venues/kuma-on-valencia,1/10,1/10,1/10,1/10,1/10,1/10,1/10
+73,2191,Picco Restaurant,Larkspur,Contemporary American,$$,0.1,7,6,60,7,0,,,4.59673,6296,https://resy.com/cities/san-francisco-ca/venues/picco-restaurant,1/8,1/8,0/8,1/10,1/10,1/8,1/8
+74,98078,Polenta Trattoria Friulana,Alamo Square,Italian,$$,0.1,5,5,50,0,0,,,4.83505,194,https://resy.com/cities/san-francisco-ca/venues/polenta-trattoria-friulana,1/10,1/10,1/10,1/10,1/10,,
+75,97100,The Hall,Mission District,Street Food,$,0.0909,7,7,77,10,0,,,4.68421,19,https://resy.com/cities/san-francisco-ca/venues/the-hall,1/11,1/11,1/11,1/11,1/11,1/11,1/11
+76,98461,Song Wat,Lower Haight,Thai,$,0.0893,7,5,56,8,0,,,4.7619,84,https://resy.com/cities/san-francisco-ca/venues/song-wat,3/8,0/8,0/8,0/8,2/8,0/8,0/8
+77,7496,Piccino Dogpatch,Dogpatch,Italian,$$,0.0889,5,4,44,0,0,,,4.72722,7299,https://resy.com/cities/san-francisco-ca/venues/piccino,,1/9,1/9,1/9,1/9,0/8,
+78,97441,Harajuku Sushi,Richmond District,Japanese,$,0.0884,6,6,68,0,0,,,4.26087,23,https://resy.com/cities/san-francisco-ca/venues/harajuku-sushi,1/11,1/11,1/11,1/12,1/12,1/11,
+79,10600,1601 Bar & Kitchen,Soma,Californian,$$,0.0857,5,3,35,0,0,,,4.85135,74,https://resy.com/cities/san-francisco-ca/venues/1601-bar-and-kitchen,0/7,0/7,0/7,0/7,3/7,,
+80,667,The Morris,The Mission,American,$$$,0.0833,6,5,60,10,0,,,4.78518,10055,https://resy.com/cities/san-francisco-ca/venues/the-morris,1/10,0/10,1/10,1/10,2/10,,0/10
+81,88787,Indigo,Marina,Californian,$,0.0833,6,5,59,0,0,,,4.84672,137,https://resy.com/cities/san-francisco-ca/venues/indigo-ca,1/10,1/10,1/10,1/10,1/10,0/9,
+82,56952,Camino Alto,Cow Hollow,Californian,$$,0.081,6,4,50,7,0,,,4.81028,759,https://resy.com/cities/san-francisco-ca/venues/camino-alto,,1/8,1/8,1/9,0/9,0/8,1/8
+83,96866,Marrakech Moroccan Restaurant,San Francisco,Moroccan,$,0.0769,4,4,52,0,0,,,4.52381,21,https://resy.com/cities/san-francisco-ca/venues/marrakech-moroccan-restaurant,,,1/13,1/13,1/13,1/13,
+84,91985,bosque,San Francisco,Contemporary American,$$,0.0741,6,4,54,8,0,,,4.76494,251,https://resy.com/cities/san-francisco-ca/venues/bosque,1/9,1/9,1/9,0/9,0/9,,1/9
+85,95269,Bar Esper,Union Square & The Tenderloin,Portuguese-Japanese,$$,0.0741,6,4,52,0,0,,,4.75,72,https://resy.com/cities/san-francisco-ca/venues/bar-esper,1/9,1/9,1/9,0/8,0/8,,1/9
+86,73079,Leopold's,Russian Hill,German,$,0.0686,5,3,43,0,0,,,4.76324,680,https://resy.com/cities/san-francisco-ca/venues/leopolds,,0/8,0/8,1/10,1/10,1/7,
+87,84694,Wizards and Wands,Marina District,American,$,0.0679,5,4,65,0,0,,,4.42675,314,https://resy.com/cities/san-francisco-ca/venues/wizards-and-wands,,1/11,1/11,1/11,0/17,1/15,
+88,10736,SPQR,Lower Pacific Heights,Italian,$$$$,0.0635,7,4,63,9,0,,,4.42315,1503,https://resy.com/cities/san-francisco-ca/venues/spqr,1/9,1/9,0/9,0/9,0/9,0/9,2/9
+89,82044,Casaro Osteria,Union Street,Italian,$$,0.0595,7,5,84,11,0,,,4.47431,506,https://resy.com/cities/san-francisco-ca/venues/casaro-osteria,1/12,1/12,0/12,1/12,1/12,0/12,1/12
+90,74859,Bar Gemini,Mission District,Wine Bar,$$,0.0556,6,3,48,7,0,,,4.7661,295,https://resy.com/cities/san-francisco-ca/venues/bar-gemini,0/7,0/7,2/9,1/9,0/9,,0/7
+91,64613,STK San Francisco,San Francisco,Steakhouse,$$,0.0369,7,5,131,17,0,,,3.3937,127,https://resy.com/cities/san-francisco-ca/venues/stk-san-francisco,0/17,0/17,0/17,1/21,0/23,4/19,0/17
+92,59934,Buddy,The Mission,Natural Wine,$$,0.0333,6,2,70,0,0,,,4.68375,1034,https://resy.com/cities/san-francisco-ca/venues/buddy,0/12,0/12,0/12,0/12,0/12,2/10,
+93,69461,Mattina,Lower Pacific Heights,Italian,$$,0.0303,6,2,60,0,0,,,4.44,1250,https://resy.com/cities/san-francisco-ca/venues/mattina,0/9,0/9,0/10,1/11,1/11,0/10,
+94,13912,Basil Thai Restaurant & Bar,SOMA,Thai,$,0.026,7,2,67,9,0,,,4.6341,522,https://resy.com/cities/san-francisco-ca/venues/basil-thai-restaurant-and-bar,0/9,0/9,0/9,1/11,1/11,0/9,0/9
+95,28462,Good Good Culture Club,The Mission,Asian,$$,0.0222,5,1,46,8,0,,,4.62064,5533,https://resy.com/cities/san-francisco-ca/venues/good-good-culture-club,1/9,0/9,0/9,0/10,,,0/9
+96,66619,The Red Window,North Beach,European,$$,0.0204,7,2,83,11,0,,,4.51016,935,https://resy.com/cities/san-francisco-ca/venues/the-red-window,0/11,0/11,0/11,1/14,1/14,0/11,0/11
+97,96136,Causwells SF,Marina District,New American,$,0.0185,6,1,57,0,0,,,4.74123,228,https://resy.com/cities/san-francisco-ca/venues/causwells,0/8,0/8,0/10,0/11,0/11,1/9,
+98,85778,Modi,Financial District,Spooky Italian,$,0.0159,7,1,93,14,0,,,4.32761,699,https://resy.com/cities/san-francisco-ca/venues/modi,0/14,0/14,0/14,0/14,0/14,1/9,0/14
+99,60774,DamnFine,Outer Sunset,Pizza,$,0.013,7,1,79,11,0,,,4.72134,1823,https://resy.com/cities/san-francisco-ca/venues/damnfine,0/11,0/11,0/11,0/12,0/12,1/11,0/11
+100,839,Lucia's Berkeley,Downtown Berkeley,Italian / Pizza,$$,0.0,5,0,44,0,0,,,4.78559,1152,https://resy.com/cities/san-francisco-ca/venues/lucias-pizzeria,,0/8,0/8,0/10,0/10,0/8,
+101,3187,Trattoria Contadina,North Beach,Italian,$$,0.0,5,0,45,0,0,,,4.81854,5803,https://resy.com/cities/san-francisco-ca/venues/trattoria-contadina,,0/9,0/9,0/9,0/9,0/9,
+102,3267,Heritage Restaurant and Bar,Inner Richmond,American,$$,0.0,5,0,59,0,0,,,4.68101,1069,https://resy.com/cities/san-francisco-ca/venues/heritage-restaurant-and-bar,,0/11,0/11,0/13,0/13,0/11,
+103,3642,Va de Vi Bistro & Wine Bar,Walnut Creek,Tapas,$$,0.0,7,0,49,7,0,,,4.77841,12189,https://resy.com/cities/san-francisco-ca/venues/va-de-vi-bistro-and-wine-bar,0/7,0/7,0/7,0/7,0/7,0/7,0/7
+104,6512,Watershed Restaurant,Mill Valley,Californian,$,0.0,7,0,66,9,0,,,4.46425,1818,https://resy.com/cities/san-francisco-ca/venues/watershed-restaurant,0/9,0/9,0/10,0/10,0/10,0/9,0/9
+105,10281,MERKADO SAN FRANCISCO,Mexican,Mexican,$$,0.0,5,0,50,0,0,,,4.38146,755,https://resy.com/cities/san-francisco-ca/venues/merkado,0/10,0/10,0/10,0/10,0/10,,
+106,39437,Brenda's Meat & Three,Nopa/Western Addition,Southern,$,0.0,7,0,56,8,0,,,4.79878,3434,https://resy.com/cities/san-francisco-ca/venues/brendas-meat-and-three,0/8,0/8,0/8,0/8,0/8,0/8,0/8
+107,49281,San Francisco Wine Society,Financial District,Wine Bar,$$,0.0,6,0,76,11,0,,,4.85657,502,https://resy.com/cities/san-francisco-ca/venues/san-francisco-wine-society,0/13,0/13,0/13,0/13,0/13,,0/11
+108,53085,Schroeder's Restaurant,Downtown - Financial District,German,$$,0.0,5,0,45,9,0,,,4.60969,392,https://resy.com/cities/san-francisco-ca/venues/schroeders-restaurant,0/9,0/9,0/9,0/9,,,0/9
+109,58566,The Stinking Rose,North Beach,Italian,$,0.0,7,0,67,9,0,,,4.32481,3402,https://resy.com/cities/san-francisco-ca/venues/the-stinking-rose-san-francisco,0/9,0/9,0/9,0/11,0/11,0/9,0/9
+110,60879,Poesia Osteria Italiana,San Francisco,Italian,$,0.0,7,0,65,9,0,,,4.81434,1869,https://resy.com/cities/san-francisco-ca/venues/poesia-osteria-italiana,0/9,0/9,0/9,0/10,0/10,0/9,0/9
+111,64870,Colibri Mexican Bistro,Presidio Park,Mexican,$$,0.0,7,0,81,10,0,,,4.48623,4468,https://resy.com/cities/san-francisco-ca/venues/colibri-mexican-bistro,0/10,0/10,0/10,0/13,0/15,0/13,0/10
+112,66668,Cavaña,Mission Bay,Modern Latin,$$,0.0,7,0,104,0,0,,,4.62567,187,https://resy.com/cities/san-francisco-ca/venues/cavana,0/14,0/14,0/14,0/15,0/19,0/14,0/14
+113,66737,Pinsa Rossa,San Francisco,Pizza,$$,0.0,7,0,60,8,0,,,4.70502,956,https://resy.com/cities/san-francisco-ca/venues/pinsa-rossa,0/8,0/8,0/8,0/10,0/10,0/8,0/8
+114,69160,Inovino,Cole Valley,Italian,$$$,0.0,7,0,70,10,0,,,4.52035,344,https://resy.com/cities/san-francisco-ca/venues/inovino,0/10,0/10,0/10,0/10,0/10,0/10,0/10
+115,73167,E&O Kitchen and Bar,Union Square,Asian,$,0.0,5,0,45,0,0,,,4.52973,740,https://resy.com/cities/san-francisco-ca/venues/eando-kitchen-and-bar,0/9,0/9,0/9,0/9,0/9,,
+116,73390,Barberio Osteria,The Mission,Italian,$$,0.0,6,0,48,8,0,,,4.6955,844,https://resy.com/cities/san-francisco-ca/venues/barberio-osteria,0/8,0/8,0/8,0/8,0/8,,0/8
+117,74561,Cantina Los Mayas,Inner Richmond,Mexican,$$,0.0,5,0,44,0,0,,,4.74724,724,https://resy.com/cities/san-francisco-ca/venues/cantina-los-mayas,,0/8,0/8,0/10,0/10,0/8,
+118,76449,Firenze by Night,North Beach,Italian,$$,0.0,5,0,44,0,0,,,4.78203,1046,https://resy.com/cities/san-francisco-ca/venues/firenze-by-night,,0/8,0/8,0/10,0/10,0/8,
+119,83012,The Rabbit Hole,Bernal Heights,Asian American,$,0.0,7,0,54,8,0,,,4.63551,214,https://resy.com/cities/san-francisco-ca/venues/the-rabbit-hole,0/8,0/8,0/8,0/8,0/8,0/6,0/8
+120,85709,Milos Meze,Marina,Greek,$$,0.0,4,0,46,0,0,,,4.85714,28,https://resy.com/cities/san-francisco-ca/venues/milos-meze,0/11,0/11,0/11,0/13,,,
+121,86435,Piccino Presidio,San Francisco,Italian,$$,0.0,6,0,54,9,0,,,4.50758,2309,https://resy.com/cities/san-francisco-ca/venues/piccino-presidio,0/9,0/9,0/9,0/9,0/9,,0/9
+122,90836,Memento SF,Noe Valley San Francisco,Modern,$$,0.0,5,0,42,0,0,,,4.51899,79,https://resy.com/cities/san-francisco-ca/venues/memento-sf,0/8,0/8,0/8,0/9,0/9,,
+123,92843,Aíso,San Francisco,Vegan & Plant-based,$,0.0,7,0,74,10,0,,,4.77308,261,https://resy.com/cities/san-francisco-ca/venues/aiso,0/10,0/10,0/10,0/10,0/12,0/12,0/10
+124,93303,IPOT,San Francisco,Asian American,$,0.0,7,0,84,12,0,,,3.72131,61,https://resy.com/cities/san-francisco-ca/venues/ipot,0/12,0/12,0/12,0/12,0/12,0/12,0/12
+125,93609,"Benihana - San Francisco, CA",San Francisco,Japanese,$$,0.0,7,0,109,15,0,,,3.96491,57,https://resy.com/cities/san-francisco-ca/venues/benihana-san-francisco-ca,0/15,0/15,0/15,0/17,0/17,0/15,0/15
+126,94120,Laughing Monk,NOPA,Gastropub,$,0.0,7,0,70,10,0,,,3.85714,49,https://resy.com/cities/san-francisco-ca/venues/laughing-monk,0/10,0/10,0/10,0/10,0/10,0/10,0/10
+127,94789,Aliment,Nob Hill,New American,$,0.0,6,0,57,9,0,,,4.51923,52,https://resy.com/cities/san-francisco-ca/venues/aliment,0/9,0/9,0/10,0/10,0/10,,0/9
+128,95055,Pasta Panino,San Francisco,Italian,$,0.0,7,0,63,0,0,,,4.54286,35,https://resy.com/cities/san-francisco-ca/venues/pasta-panino,0/9,0/9,0/9,0/9,0/9,0/9,0/9
+129,95979,Camber,Oyster Point,Californian,$,0.0,3,0,30,0,0,,,4.29412,34,https://resy.com/cities/san-francisco-ca/venues/camber,0/10,0/10,,0/10,,,
+130,96353,Tahona Mercado,Nob Hill,Mexican,$$,0.0,5,0,50,10,0,,,4.69231,26,https://resy.com/cities/san-francisco-ca/venues/tahona-mercado,0/10,,0/10,0/10,0/10,,0/10
+131,97874,Cha Cha Cha,Haight-Ashbury,Caribbean,$,0.0,7,0,91,13,0,,,4.5625,16,https://resy.com/cities/san-francisco-ca/venues/cha-cha-cha-ca,0/13,0/13,0/13,0/13,0/13,0/13,0/13
+132,99233,Per Diem - Transit Center,San Francisco,Contemporary American,$,0.0,2,0,14,7,0,,,5.0,0,https://resy.com/cities/san-francisco-ca/venues/per-diem-transit-center,,,,0/7,,,0/7
+,515,Delage,Old Oakland,Japanese,$$$,,0,0,0,7,1,no_dinner_service,No seating window for a party of two on any day of the week.,4.69534,3453,https://resy.com/cities/san-francisco-ca/venues/delage,,,,,,,
+,1205,Lovejoy's Tea Room,Noe Valley,Tea Room,$,,0,0,0,0,1,no_dinner_service,Seats a party of two at lunch or brunch only; no dinner window in the week.,4.84372,7301,https://resy.com/cities/san-francisco-ca/venues/lovejoys-tea-room,,,,,,,
+,27177,Flatiron Wines & Spirits,Financial District/SOMA,Wine Bar,$$,,0,0,0,0,1,no_dinner_service,Seats a party of two at lunch or brunch only; no dinner window in the week.,5.0,0,https://resy.com/cities/san-francisco-ca/venues/flatiron-wines-and-spirits-ca,,,,,,,
+,53343,KEN,Lower Haight,Sushi,$$$$,,0,0,0,,1,no_inventory,Zero open dinner tables on all 5 nights and still zero (no data) three weeks out: Resy holds no real two-top inventory here.,4.90351,1026,https://resy.com/cities/san-francisco-ca/venues/ken,,6/6,6/6,6/6,6/6,6/6,
+,65473,Mr. Pollo,Mission District,New American,$$$,,0,0,0,0,1,no_inventory,Zero open dinner tables on all 5 nights and still zero three weeks out: Resy holds no real two-top inventory here.,4.94243,1268,https://resy.com/cities/san-francisco-ca/venues/mr-pollo,9/9,9/9,9/9,9/9,9/9,,
+,74387,Jules,Lower Haight,Pizza,$$,,0,0,0,0,1,no_dinner_service,No seating window for a party of two on any day of the week.,4.74483,580,https://resy.com/cities/san-francisco-ca/venues/jules,,,,,,,
+,87972,Sisterita,Financial District,Breakfast,$,,0,0,0,0,1,no_dinner_service,Seats a party of two at lunch or brunch only; no dinner window in the week.,4.45167,538,https://resy.com/cities/san-francisco-ca/venues/sisterita,,,,,,,
+,95270,The Big Four,Nob Hill,Contemporary American,$$$,,0,0,0,0,1,no_dinner_service,Seats a party of two at lunch or brunch only; no dinner window in the week.,4.82927,41,https://resy.com/cities/san-francisco-ca/venues/the-big-four,,,,,,,
+,97467,Esme,San Francisco,French Bistro,$$,,0,0,0,0,1,no_inventory,Zero open dinner tables on all 5 nights and still zero three weeks out: Resy holds no real two-top inventory here.,4.84394,487,https://resy.com/cities/san-francisco-ca/venues/esme-ca,,10/10,10/10,10/10,10/10,10/10,
+,97777,HK Lounge Bistro,SoMa,Chinese,$$,,0,0,0,0,1,no_inventory,Zero open dinner tables on all 6 nights and still zero three weeks out: Resy holds no real two-top inventory here.,4.84,25,https://resy.com/cities/san-francisco-ca/venues/hk-lounge-bistro,,7/7,7/7,7/7,7/7,7/7,7/7

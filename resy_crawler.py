@@ -21,8 +21,7 @@ import urllib.request
 
 API_BASE = "https://api.resy.com"
 SEARCH_PATH = "/3/venuesearch/search"
-# Public key shipped in resy.com's web client JS bundle. Override with RESY_API_KEY.
-DEFAULT_API_KEY = "VbWk7s3L4KiK5fzlO7JD3Q5EYolJI7n5"
+ENV_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
 PAGE_SIZE_CAP = 75  # server silently caps per_page at 75
 
 SF = {
@@ -33,6 +32,27 @@ SF = {
     "bbox": [37.70, -122.53, 37.84, -122.35],
 }
 PRICE = {1: "$", 2: "$$", 3: "$$$", 4: "$$$$"}
+
+
+def load_dotenv(path=ENV_FILE):
+    """Minimal .env loader: KEY=VALUE lines, # comments, no expansion. Real env wins."""
+    if not os.path.exists(path):
+        return
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+
+
+def api_key_from_env():
+    load_dotenv()
+    key = os.environ.get("RESY_API_KEY")
+    if not key:
+        raise SystemExit("RESY_API_KEY is not set. Copy .env.example to .env and fill it in.")
+    return key
 
 
 def headers(api_key):
@@ -167,7 +187,7 @@ def main():
     ap.add_argument("--show", type=int, default=15, help="rows to print (default 15)")
     args = ap.parse_args()
 
-    api_key = os.environ.get("RESY_API_KEY", DEFAULT_API_KEY)
+    api_key = api_key_from_env()
     rows, total, pages_hit = crawl(args.strategy, args.max_venues, args.max_pages, args.delay, api_key)
     if not rows:
         raise SystemExit("No venues returned.")

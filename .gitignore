@@ -1,2 +1,7 @@
 __pycache__/
 *.pyc
+.env
+.venv/
+data/*.sqlite-wal
+data/*.sqlite-shm
+ui-mockups.zip
