@@ -44,6 +44,12 @@ party size. The API process schedules a run every hour (`RUN_INTERVAL_MINUTES`,
 | GET | `/api/venues/{id}/windows?service=&grid=` | Same for one venue, with its phone number; this is what an expanded row shows. |
 | GET | `/api/venues/{id}/history?party_size=` | SCD2 version history of a venue's nightly observations. |
 
+## Tests
+
+`uv run pytest`. The suite is small on purpose: it protects the box grid, the
+exclusion rules, the observation hash, SCD2 reads, the rating cut-offs, and one
+end-to-end read through the API against a seeded temp store. No test calls Resy.
+
 ## Storage
 
 SQLite at `data/resy.sqlite` with slowly-changing-dimension type 2 tables for

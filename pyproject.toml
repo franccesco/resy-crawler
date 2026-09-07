@@ -43,6 +43,10 @@ select = [
 ]
 ignore = ["incorrect-blank-line-before-class", "multi-line-summary-first-line", "multi-line-summary-second-line"]
 
+[tool.ruff.lint.per-file-ignores]
+# Test names are the documentation; docstring rules add noise there.
+"tests/**" = ["D", "DOC"]
+
 [tool.ruff.lint.mccabe]
 # Maximum complexity allowed (default is 10)
 max-complexity = 10
@@ -57,5 +61,10 @@ typeCheckingMode = "strict"
 [dependency-groups]
 dev = [
     "basedpyright>=1.40.0",
+    "dbt-duckdb>=1.11.0",
+    "pytest>=9.1.1",
     "ruff>=0.16.6",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
