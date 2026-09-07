@@ -2,6 +2,11 @@ __pycache__/
 *.pyc
 .env
 .venv/
+
+# local store; hourly runs rewrite it. Outputs are exported to CSV instead.
+data/*.sqlite
 data/*.sqlite-wal
 data/*.sqlite-shm
+data/cron.log
+
 ui-mockups.zip

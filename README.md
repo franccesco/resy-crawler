@@ -50,15 +50,14 @@ SQLite at `data/resy.sqlite` with slowly-changing-dimension type 2 tables for
 venue attributes and per-night raw observations (all service windows, all open slot
 times). Only changed observations open new rows; a row is valid for run R when
 `first_run_id <= R <= last_seen_run_id`. Scoring reads these at request time, so
-service, grid and party size are query parameters. `data/resy_v1_dinner_only.sqlite`
-is the first-generation store whose rows hold only dinner results.
+service, grid and party size are query parameters. The store is not committed;
+`data/sf_busyness.csv` is the exported output.
 
 ## Layout
 
 - `resy_busyness/` package: `config` (env), `models` (pydantic), `resy_client`, `scoring` (observe at ingestion, score at read), `db` (SCD2), `pipeline` (the run), `scheduler` (hourly), `api` (FastAPI).
 - `static/` UI on the Modernist stylesheet from the design mockup.
-- `resy_crawler.py` the original one-file sample crawler, kept for reference.
-- `data/` outputs: the SQLite store and CSV exports.
+- `data/sf_busyness.csv` the committed output: latest run, dinner, party of two. The SQLite store lives in `data/` too but is not tracked.
 
 ## How the Resy API is used
 
@@ -99,3 +98,12 @@ Output: `data/sf_venues.csv` and `data/sf_venues.json`, plus a table on stdout.
 resy_id, name, neighborhood, cuisine, price ($–$$$$), rating_avg, rating_count,
 phone, lat, lng, locality, location_code, max_party_size, global_dining_access,
 collections, url_slug, url, source_strategy.
+
+## Follow-ups
+
+- **Rating grade needs an evaluation.** The S–F letter is cut from Resy's average
+  alone, relative to the SF distribution. That may be biased: a small, niche room
+  can out-grade a landmark on average alone. Evaluate against review count, price,
+  and an outside signal before trusting the letter.
+- **History in the UI.** The store keeps every version of every night, but the UI
+  shows only the current evaluation and windows. Expose the past snapshots.
