@@ -27,6 +27,12 @@
   .hovercard .muted{color:color-mix(in srgb, var(--color-text) 60%, transparent);margin-top:6px}
   .table th.num{text-align:right}
   .table th .hint{white-space:nowrap}
+  .chips{display:flex;flex-wrap:wrap;gap:4px}
+  .chip{font-family:ui-monospace,Menlo,monospace;font-size:11px;padding:2px 6px;border:1px solid var(--color-divider);background:var(--color-surface)}
+  .chip.new{background:var(--color-accent);color:var(--color-bg);border-color:var(--color-accent)}
+  .hr{margin:var(--space-6) 0 var(--space-3)}
+  .toolbar .legend{flex-basis:100%;justify-content:flex-start}
+  @media (min-width:1500px){.toolbar .legend{flex-basis:auto;margin:0 auto}}
   .nights div{cursor:help}
   .counters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:var(--space-6);border-top:2px solid var(--color-divider);border-bottom:2px solid var(--color-divider)}
   .counters > div{padding:var(--space-3) 0}
@@ -80,9 +86,9 @@
     <div style="padding-right:var(--space-8);border-right:2px solid var(--color-divider)">
       <h6 style="color:var(--color-accent);margin-bottom:var(--space-3)" id="run-kicker">New run</h6>
       <h1 style="max-width:14ch;margin-bottom:var(--space-4)">Reading San Francisco for a party of 2.</h1>
-      <p class="text-muted" style="max-width:52ch">One request per page of Resy's venue search, for each of the next dinner nights plus one far-out verification day. Every venue's seating window and open tables are recorded per night; only changes are stored.</p>
+      <p class="text-muted" style="max-width:52ch">One request per page of Resy's venue search, for each of the next nights plus one far-out verification day, per party size. Every venue's seating windows and open tables are recorded raw; only changes are stored, and scoring happens when you read.</p>
       <form id="run-form" class="params">
-        <div><label class="kicker text-muted" for="party"><span class="hint" data-hc="<b>Party size</b>How many guests the table is for. Resy reports seating windows and open tables per party size, so the whole score is specific to this number. Two matches the question: how hard is a table for two?"><span>Party size</span></span></label><input class="input" id="party" type="number" min="1" max="20" value="2"></div>
+        <div><label class="kicker text-muted" for="party"><span class="hint" data-hc="<b>Party sizes</b>Guest counts to ingest, comma separated. Resy only answers per party size and applies its own table assignment, so each size is two extra requests per day. Scoring later lets you pick any size the run ingested."><span>Party sizes</span></span></label><input class="input" id="party" type="text" value="2" placeholder="2, 4"></div>
         <div><label class="kicker text-muted" for="days"><span class="hint" data-hc="<b>Nights</b>How many consecutive dinner nights to read, starting tomorrow (Pacific time). Each night is two requests to Resy. Seven gives one of each weekday and stays inside the horizon where nearly every restaurant has released its tables."><span>Nights</span></span></label><input class="input" id="days" type="number" min="1" max="30" value="7"></div>
         <div><label class="kicker text-muted" for="verify"><span class="hint" data-hc="<b>Verify day (+N)</b>One extra day this many days out, read once. A venue with zero open tables on every night of the week is checked here: open tables three weeks out prove it is genuinely sold out and it is scored 1.00; still nothing means Resy holds no real inventory for it and it is excluded instead."><span>Verify day (+N)</span></span></label><input class="input" id="verify" type="number" min="8" max="60" value="21"></div>
       </form>
@@ -91,6 +97,9 @@
         <button type="button" class="btn btn-secondary" id="refresh-runs">Refresh</button>
       </div>
       <p class="text-muted sub" id="run-error" style="margin-top:var(--space-3)"></p>
+      <div class="hr"></div>
+      <div class="kicker text-muted">Schedule</div>
+      <p class="sub" id="sched" style="margin-top:4px">—</p>
     </div>
     <div style="padding-left:var(--space-8)">
       <div style="display:flex;justify-content:space-between;align-items:baseline">
@@ -126,6 +135,7 @@
     <div class="toolbar">
       <div class="tabs">
         <a href="#results" data-tab="scored" class="on">Scored <span class="text-muted" id="t-scored"></span></a>
+        <a href="#results" data-tab="windows">Windows <span class="text-muted" id="t-win"></span></a>
         <a href="#results" data-tab="excluded">Excluded <span class="text-muted" id="t-excl"></span></a>
       </div>
       <div class="legend text-muted" id="legend">
@@ -135,7 +145,19 @@
         <span><i style="background:repeating-linear-gradient(135deg,var(--color-neutral-300) 0 3px,transparent 3px 6px)"></i>No dinner window</span>
       </div>
       <div style="display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap">
-        <input class="input" id="q" placeholder="Search name, neighborhood, cuisine" style="width:260px">
+        <span class="hint sub text-muted" data-hc="<b>Scoring</b>These change how the stored observations are read; nothing is re-ingested. Service picks which seating windows count. Grid is the box size: 30 minutes is Resy's seating step, 15 matches the slot times. Party size must be one the run ingested.">Score as</span>
+        <select class="input" id="sp-party" style="width:auto;min-height:32px;padding:4px 8px"></select>
+        <div class="seg" id="sp-service">
+          <label class="seg-opt"><input type="radio" name="svc" value="dinner" checked>Dinner</label>
+          <label class="seg-opt"><input type="radio" name="svc" value="lunch">Lunch</label>
+          <label class="seg-opt"><input type="radio" name="svc" value="brunch">Brunch</label>
+          <label class="seg-opt"><input type="radio" name="svc" value="all">All</label>
+        </div>
+        <div class="seg" id="sp-grid">
+          <label class="seg-opt"><input type="radio" name="grid" value="30" checked>30 min</label>
+          <label class="seg-opt"><input type="radio" name="grid" value="15">15 min</label>
+        </div>
+        <input class="input" id="q" placeholder="Search name, neighborhood, cuisine" style="width:220px">
         <a class="btn btn-secondary" id="csv" href="/api/results.csv">Export CSV<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg></a>
       </div>
     </div>

@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     per_page: int = 75  # server caps at 75
     request_delay_s: float = 2.0
     min_days_scored: int = 2
+    run_interval_minutes: int = 60  # 0 disables the in-process scheduler
+    run_on_start: bool = False
+    schedule_party_sizes: list[int] = [2]
 
 
 settings = Settings()

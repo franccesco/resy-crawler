@@ -71,16 +71,40 @@ a 14-seat counter and a 200-seat hall are compared on the same 0 to 1 scale of
 on top; the plain ratio was chosen for transparency. The inputs (taken and total
 boxes per night, open times on hover) are shown next to every score.
 
+## Why the score exists
+
+The score is a filter, not the goal. As a customer I want tables at places that are
+hard to get into, so the score ranks how exclusive a restaurant is this week, and
+the **Windows** view then lists, for restaurants above a threshold, every half-hour
+still bookable and flags the ones that appeared since the previous snapshot. Those
+are cancellations and releases: the moments to book. Hourly snapshots exist so that
+list is never more than an hour stale.
+
+## Scoring is applied when you read, not when you ingest
+
+A run stores the raw observation for each (venue, night, party size): every service
+window Resy reports and every open slot time with its seating area. Service (dinner,
+lunch, brunch, all), grid size (30 or 15 minutes), and the minimum nights are query
+parameters, so the same run can be read as "dinner for two on a 30-minute grid" or
+"lunch for four on a 15-minute grid" without touching Resy again. Party size is the
+one thing that has to be chosen at ingestion: every Resy availability endpoint
+requires it and applies Resy's own table assignment, so there is no disclosed table
+inventory from which other sizes could be derived. A run can ingest several sizes at
+the cost of two requests per size per day.
+
 ## Snapshots and change tracking
 
 The book changes constantly, so every run is a snapshot with a timestamp, and the
 store is slowly-changing-dimension type 2. Resy has no "changed since" endpoint,
-so each run re-reads the full state (two pages per day, about 16 requests with a
-two-second gap). What is stored is only change: a venue's descriptive attributes
-and each (venue, night) availability state get a new row only when their hash
-differs from the current row; otherwise the current row's `last_seen_run_id` is
-bumped. Ratings, which move every run, are kept per run outside the SCD2 hash so
-they do not churn versions. `GET /api/venues/{id}/history` exposes the versions.
+so each run re-reads the full state (two pages per day per party size, about 16
+requests with a two-second gap). The API process runs one every hour by default
+(`RUN_INTERVAL_MINUTES`). What is stored is only change: a venue's descriptive
+attributes and each (venue, night, party size) raw observation get a new row only
+when their hash differs from the current row; otherwise the current row's
+`last_seen_run_id` is bumped. A row is valid for run R when
+`first_run_id <= R <= last_seen_run_id`, which is how results are computed as of
+any past run. Ratings, which move every run, are kept per run outside the hash.
+`GET /api/venues/{id}/history` exposes the versions.
 
 ## Limitations and judgment calls
 
@@ -92,6 +116,6 @@ they do not churn versions. `GET /api/venues/{id}/history` exposes the versions.
 - Some venues carry Resy's San Francisco location code but sit in Berkeley or
   Oakland (Chez Panisse, Belotti). They are kept because the exercise is "on Resy
   in San Francisco" as Resy defines it; a city-limits filter is one line if wanted.
-- Dinner only. Lunch and brunch windows are read and stored but not scored.
+- Dinner is the default reading. Lunch and brunch are stored and can be scored with `service=`.
 - One snapshot says nothing about fill speed. Daily runs against the same store
   would, since each night's state history is kept.

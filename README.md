@@ -22,28 +22,39 @@ uv run uvicorn resy_busyness.api:app --reload   # UI at http://127.0.0.1:8000, O
 uv run resy-run --days 7 --party 2              # or run once from the CLI
 ```
 
-A run is two requests per day for seven dinner nights plus one verification day
-three weeks out, with two seconds between requests: about 16 requests total.
+A run is two requests per day per party size for seven nights plus one verification
+day three weeks out, with two seconds between requests: about 16 requests for one
+party size. The API process schedules a run every hour (`RUN_INTERVAL_MINUTES`,
+0 to disable; `RUN_ON_START=true` to run immediately at boot). Equivalent crontab:
+
+```
+0 * * * * cd /path/to/resy-crawler && uv run resy-run --party 2 >> data/cron.log 2>&1
+```
 
 ## API
 
 | Method | Path | What |
 | --- | --- | --- |
-| POST | `/api/runs` | Start a run. Body is `RunParams` (party_size, days, verify_offset_days, start_day). 409 if one is running. |
+| POST | `/api/runs` | Start a run. Body is `RunParams` (party_sizes, days, verify_offset_days, start_day). 409 if one is running. |
 | GET | `/api/runs`, `/api/runs/{id}` | Progress, counters, and the request log. |
-| GET | `/api/results?run_id=&view=scored\|excluded\|all&q=` | Ranked table with per-night inputs. Defaults to the latest finished run. |
-| GET | `/api/results.csv` | Same as CSV. |
-| GET | `/api/venues/{id}/history` | SCD2 version history of a venue's nightly states. |
+| GET | `/api/scheduler` | Interval, next run, active run. |
+| GET | `/api/results?run_id=&party_size=2&service=dinner&grid=30&min_nights=2&view=&q=` | Ranked table, scored at read time from the stored observations. Defaults to the latest finished run. |
+| GET | `/api/results.csv?…` | Same as CSV; the first line records the scoring parameters. |
+| GET | `/api/windows?min_score=0.7&party_size=2&service=dinner&grid=30` | Exclusive restaurants with open boxes, and which boxes appeared since the previous snapshot. |
+| GET | `/api/venues/{id}/history?party_size=` | SCD2 version history of a venue's nightly observations. |
 
 ## Storage
 
 SQLite at `data/resy.sqlite` with slowly-changing-dimension type 2 tables for
-venue attributes and per-night availability. Only changed observations open new
-rows. See `resy_busyness/db.py`.
+venue attributes and per-night raw observations (all service windows, all open slot
+times). Only changed observations open new rows; a row is valid for run R when
+`first_run_id <= R <= last_seen_run_id`. Scoring reads these at request time, so
+service, grid and party size are query parameters. `data/resy_v1_dinner_only.sqlite`
+is the first-generation store whose rows hold only dinner results.
 
 ## Layout
 
-- `resy_busyness/` package: `config` (env), `models` (pydantic), `resy_client`, `scoring` (pure functions), `db` (SCD2), `pipeline` (the run), `api` (FastAPI).
+- `resy_busyness/` package: `config` (env), `models` (pydantic), `resy_client`, `scoring` (observe at ingestion, score at read), `db` (SCD2), `pipeline` (the run), `scheduler` (hourly), `api` (FastAPI).
 - `static/` UI on the Modernist stylesheet from the design mockup.
 - `resy_crawler.py` the original one-file sample crawler, kept for reference.
 - `data/` outputs: the SQLite store and CSV exports.
