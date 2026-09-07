@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: stg_runs
+    description: One row per run with the service days it covered.
+    columns:
+      - name: run_id
+        description: Run id, primary key.
+        tests: [unique, not_null]
+      - name: status
+        description: Lifecycle state of the run.
+        tests:
+          - accepted_values:
+              values: [queued, running, done, failed]
+      - name: first_night
+        description: First service day read (the day after the run started, Pacific).
+      - name: last_night
+        description: Last regular service day read.
+      - name: verify_day
+        description: The far-out day read once to tell sold out from no inventory.
+
+  - name: stg_venues
+    description: Current attributes of each venue, unpacked from JSON.
+    columns:
+      - name: venue_id
+        description: Resy venue id.
+        tests: [unique, not_null]
+      - name: name
+        tests: [not_null]
+
+  - name: stg_venue_ratings
+    description: Rating average and review count per (run, venue).
+    columns:
+      - name: run_id
+        tests: [not_null]
+      - name: venue_id
+        tests: [not_null]
+
+  - name: stg_venue_day_state
+    description: Every stored version of a venue-night observation, flags unpacked.
+    columns:
+      - name: state_id
+        description: Version row id, primary key.
+        tests: [unique, not_null]
+      - name: venue_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_venues')
+              field: venue_id
+      - name: service_day
+        tests: [not_null]
+      - name: party_size
+        tests: [not_null]
+      - name: is_current
+        description: Whether this is the live version for its (venue, day, party).

@@ -113,3 +113,35 @@ collections, url_slug, url, source_strategy.
   and an outside signal before trusting the letter.
 - **History in the UI.** The store keeps every version of every night, but the UI
   shows only the current evaluation and windows. Expose the past snapshots.
+
+## Analytics (dbt)
+
+A small dbt project in `analytics/` for inspecting the store, testing its
+invariants, and producing analytics the app does not compute yet. It uses
+**dbt-duckdb**: DuckDB attaches `data/resy.sqlite` read-only through its sqlite
+extension and builds models into a separate `data/analytics.duckdb`, so the app's
+store is never written. `dbt-sqlite` was tried first and rejected: it pins an old
+dbt-core that fails to import on Python 3.14.
+
+Run from the repository root; the profile lives in the repo so no setup is needed:
+
+```sh
+uv run dbt run  --project-dir analytics --profiles-dir analytics
+uv run dbt test --project-dir analytics --profiles-dir analytics
+uv run python analytics/crosscheck.py     # SQL scoring vs resy_busyness.scoring
+uv run dbt docs generate --project-dir analytics --profiles-dir analytics
+```
+
+Models:
+
+- `stg_runs`, `stg_venues`, `stg_venue_ratings`, `stg_venue_day_state`: the store's tables typed, JSON attributes and flags unpacked, run day ranges derived.
+- `int_windows`, `int_slots`: service windows and open slots unnested from each observation version, with slots snapped to their 30-minute box.
+- `int_night_boxes`: dinner half-hour boxes per version, each flagged open or taken.
+- `fct_night_boxes`: boxes, open boxes and taken per version. Mirrors `scoring.score_night`; `crosscheck.py` compares the two over every version.
+- `fct_venue_week_score`: the busyness score per (run, venue) as of each finished run, using SCD2 validity. Exclusion flags are carried, not applied.
+- `fct_fill_speed`: per venue-night, how open boxes moved between consecutive snapshots, with the box times that appeared and disappeared. Raw material for fill-speed curves and the windows feature.
+- `dim_venue`: current venue attributes with the latest rating and its S–F tier, same cuts as the app.
+
+Tests: keys and relationships in `schema.yml`, plus singular tests for the SCD2
+invariants (one live version per key, `first_run_id <= last_seen_run_id`, closed
+versions carry `valid_to`) and for `open_boxes <= boxes`, `taken = boxes - open_boxes`.

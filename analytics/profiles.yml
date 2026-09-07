@@ -1,0 +1,17 @@
+# Runs from the repository root:
+#   uv run dbt run --project-dir analytics --profiles-dir analytics
+# Models are built into data/analytics.duckdb. The app's store data/resy.sqlite is
+# attached read-only through DuckDB's sqlite extension and is never written.
+resy_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('RESY_ANALYTICS_DB', 'data/analytics.duckdb') }}"
+      extensions: [sqlite, json, icu]
+      attach:
+        - path: "{{ env_var('RESY_DB_PATH', 'data/resy.sqlite') }}"
+          alias: resy
+          type: sqlite
+          read_only: true
+      threads: 4

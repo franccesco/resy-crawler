@@ -1,0 +1,18 @@
+name: resy_analytics
+version: "0.1.0"
+config-version: 2
+profile: resy_analytics
+
+model-paths: ["models"]
+test-paths: ["tests"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  resy_analytics:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table

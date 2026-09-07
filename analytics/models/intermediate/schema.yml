@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: int_windows
+    description: Service windows unnested from each observation version.
+    columns:
+      - name: state_id
+        tests: [not_null]
+      - name: svc
+        description: Resy service type id (1 brunch, 2 dinner, 3 lunch, 5 breakfast).
+      - name: start_min
+        description: First seating as minutes after midnight.
+      - name: end_min
+        description: Last seating as minutes after midnight (inclusive).
+
+  - name: int_slots
+    description: Open slots unnested from each observation version.
+    columns:
+      - name: state_id
+        tests: [not_null]
+      - name: box_min_30
+        description: Slot start snapped down to its 30-minute box.
+
+  - name: int_night_boxes
+    description: Dinner half-hour boxes per version, flagged open or taken.
+    columns:
+      - name: state_id
+        tests: [not_null]
+      - name: box_min
+        tests: [not_null]
+      - name: is_open
+        tests: [not_null]

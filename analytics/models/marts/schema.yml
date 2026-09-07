@@ -1,0 +1,74 @@
+version: 2
+
+models:
+  - name: fct_night_boxes
+    description: >
+      Dinner boxes per observation version on a 30-minute grid; mirrors
+      resy_busyness.scoring.score_night and is cross-checked by analytics/crosscheck.py.
+    columns:
+      - name: state_id
+        description: Observation version, primary key.
+        tests: [unique, not_null]
+      - name: venue_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_venue')
+              field: venue_id
+      - name: boxes
+        description: Half-hours from first to last dinner seating, inclusive.
+        tests: [not_null]
+      - name: open_boxes
+        description: Boxes with at least one bookable slot.
+        tests: [not_null]
+      - name: taken
+        description: boxes - open_boxes.
+      - name: taken_ratio
+        description: taken / boxes; null when the night has no dinner window.
+
+  - name: fct_venue_week_score
+    description: The app's busyness score per (run, venue) for dinner on a 30-minute grid.
+    columns:
+      - name: run_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_runs')
+              field: run_id
+      - name: venue_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_venue')
+              field: venue_id
+      - name: score
+        description: Mean of taken/boxes over nights with a dinner window; 0 open, 1 sold out.
+      - name: days_scored
+        description: Nights with a dinner window that entered the mean.
+      - name: sold_out_all_week
+        description: True when every scored night had zero open boxes.
+      - name: far_open_boxes
+        description: Open dinner boxes on the verification day three weeks out.
+
+  - name: fct_fill_speed
+    description: Change in dinner availability between consecutive snapshots of a venue-night.
+    columns:
+      - name: state_id
+        tests: [unique, not_null]
+      - name: open_delta
+        description: open_after - open_before; negative means tables were booked.
+      - name: appeared
+        description: Box times open now that were not open in the previous snapshot.
+      - name: disappeared
+        description: Box times that were open and are now gone.
+
+  - name: dim_venue
+    description: One row per venue with current attributes, latest rating and S–F tier.
+    columns:
+      - name: venue_id
+        tests: [unique, not_null]
+      - name: rating_tier
+        description: S/A/B/C/D/F with the app's cuts; null under 20 reviews.
+        tests:
+          - accepted_values:
+              values: [S, A, B, C, D, F]

@@ -1,0 +1,22 @@
+version: 2
+
+sources:
+  - name: resy_store
+    description: >
+      The app's SQLite store (resy_busyness/db.py), attached read-only as `resy`.
+      SCD type 2: a row is valid for run R when first_run_id <= R <= last_seen_run_id.
+    database: resy
+    schema: main
+    tables:
+      - name: runs
+        description: One row per ingestion run with progress counters.
+      - name: run_log
+        description: Request-level log lines per run.
+      - name: venues
+        description: SCD2 versions of venue attributes; attrs_json holds VenueAttrs.
+      - name: venue_ratings
+        description: Resy rating average and count as seen by each run.
+      - name: venue_day_state
+        description: >
+          SCD2 versions of the raw availability observation per (venue, service day,
+          party size); state_json holds the Observation (windows, slots, flags).
