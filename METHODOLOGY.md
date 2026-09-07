@@ -1,122 +1,101 @@
-# Methodology: the busyness score
+# Methodology
 
-**Question.** For a party of two, how much of each San Francisco restaurant's dinner
-book on Resy is already gone?
+**Question.** For a party of two, how much of a restaurant's book on Resy is gone?
 
-**Answer shape.** One number per restaurant between 0 and 1. 0 means every dinner
-half-hour is still bookable; 1 means nothing is left on any night. The table is
-sorted by this number, descending, with every input that produced it visible.
+**Answer.** One number per restaurant, 0 to 1. 0: every slot still open. 1: nothing left.
 
-## Source
+## Pipeline
 
-Everything comes from one undocumented endpoint the resy.com web client uses,
-`POST https://api.resy.com/3/venuesearch/search`, authenticated with the public API
-key the client ships in its JavaScript bundle. We ask for San Francisco venues
-(`venue_filter.location_code = "sf"`) with `availability: true` and a
-`slot_filter` of `{day, party_size: 2}`. For every venue the response carries:
+```mermaid
+flowchart LR
+  A[Resy venue search<br/>day + party size] --> B[Observation per venue-night<br/>service windows + open slots]
+  B --> C[(SQLite, SCD type 2<br/>new row only on change)]
+  C --> D[Score at read time<br/>service, grid, min nights]
+  D --> E[Ranked table + windows]
+  S[Scheduler, hourly] --> A
+```
 
-- `availability.notify_options`: the service windows in which the restaurant seats
-  a party of that size that day, one per service type (dinner is type 2), as a
-  first and last seating time in 30-minute steps.
-- `availability.slots`: the tables still bookable, as start times at 15-minute
-  granularity, each tagged with a seating area.
-- `availability.events`: ticketed events that day.
-- Flags used for exclusions: `is_tock_inventory`, `source.name`, `reopen.date`.
+Every run re-reads the full state: two requests per day per party size, seven nights
+plus one verification day three weeks out, two seconds apart. About 16 requests.
 
-No other data source is needed. Review counts are also returned and shown as a
-size hint, but they are not part of the score.
+## Score
 
-## One night
+The score is a ratio: slots with nothing left, divided by all slots in the chosen
+schedule (dinner by default; lunch, brunch, or all are query parameters).
 
-1. **Boxes.** Build the half-hour grid from the first to the last dinner seating in
-   `notify_options` (inclusive). Rintaro on a Saturday, 17:00 to 22:00, is 11 boxes.
-2. **Open boxes.** Snap every slot start time down to its half-hour box. A box is
-   open if any slot lands in it. Snapping matters: a restaurant that offers 7:00,
-   7:15, 7:30 and 7:45 would otherwise look twice as open as one offering 7:00 and
-   7:30.
-3. **Nightly ratio** = (boxes − open boxes) ÷ boxes.
+```mermaid
+flowchart TD
+  W[Service window<br/>first to last seating, inclusive] --> G[Half-hour boxes]
+  S[Open slot times<br/>15-minute granularity] --> N[Snap down to the half-hour]
+  G --> R[taken = boxes without an open slot]
+  N --> R
+  R --> Q[night ratio = taken / boxes]
+  Q --> M[score = mean of night ratios<br/>over nights that had a window]
+```
 
-A night with no dinner window for two is skipped, not counted as full. The
-restaurant may be closed that day, or seat two only at lunch.
+Example, Izakaya Rintaro, dinner 17:00 to 22:00: 11 boxes. Saturday 0 open: 1.00.
+Tuesday 2 open: 0.82. Score over the week: mean of the nightly ratios.
 
-## The week
-
-Nights are tomorrow through seven days out, Pacific time. The score is the plain
-mean of the nightly ratios over nights that had a dinner window. Seven days gives
-one of each weekday and stays inside the horizon in which nearly every restaurant
-has released its tables. Holidays and special dates will skew individual weeks;
-the run window is a parameter so it can be widened later.
+Snapping matters: four 15-minute times inside two half-hours count as two open boxes,
+not four. Nights with no window for the party are skipped, not counted as full.
 
 ## Who is not scored
 
-The exercise asks that empty never pass for full. Each rule maps to a field:
+```mermaid
+flowchart TD
+  X{reopen date in future?} -- yes --> C1[closed]
+  X -- no --> Y{Tock or third-party source?} -- yes --> C2[other platform]
+  Y -- no --> Z{any window this week?}
+  Z -- "no, events listed" --> C3[events only]
+  Z -- "no" --> C4[no service for this party]
+  Z -- yes --> K{fewer than 2 nights?} -- yes --> C5[insufficient data]
+  K -- no --> F{zero open every night?}
+  F -- no --> OK[scored]
+  F -- yes --> V{open tables 21 days out?}
+  V -- yes --> OK1[scored 1.00, evidence noted]
+  V -- no --> C6[no inventory]
+```
 
-| Reason | Signal | Outcome |
-| --- | --- | --- |
-| Closed (temporary or permanent) | `reopen.date` in the future | excluded |
-| Books on another platform | `is_tock_inventory` true, or `source.name` set | excluded |
-| Events only | events in the week, never a dinner window for two | excluded |
-| No dinner service for two | no dinner window on any night (lunch-only, walk-in, or seats two nowhere) | excluded |
-| Fewer than 2 nights with a window | too little to average | excluded |
-| Zero open boxes every night | one extra look 21 days out. Tables there: genuinely sold out, scored 1.00 with that evidence. Still nothing: Resy holds no real two-top inventory for this venue | scored or excluded |
+Excluded venues are listed with reason and evidence. Empty never passes for full.
 
-Excluded venues are listed with the reason and the evidence, and they are held out
-of the ranked set entirely.
+## Snapshots
 
-## Normalization
+The book changes constantly. A run is a timestamped snapshot; storage keeps only
+change. A venue-night row is valid for run R when `first_run_id <= R <= last_seen_run_id`,
+so any past run can be re-scored. Ratings are stored per run outside the change hash.
 
-The nightly ratio is already a proportion of the restaurant's own dinner window, so
-a 14-seat counter and a 200-seat hall are compared on the same 0 to 1 scale of
-"how much of what you offer is gone". No percentile ranking or tiering is applied
-on top; the plain ratio was chosen for transparency. The inputs (taken and total
-boxes per night, open times on hover) are shown next to every score.
+## What the score misses
 
-## Why the score exists
+The ratio is deliberately simple, and it is not enough. It answers "what share of the
+book is gone" and nothing else. A fuller measure would need inputs we do not have or
+have not used yet:
 
-The score is a filter, not the goal. As a customer I want tables at places that are
-hard to get into, so the score ranks how exclusive a restaurant is this week.
-Clicking a row expands it into every half-hour still bookable there, night by night,
-with the ones that appeared since the previous snapshot marked in red. Those are
-cancellations and releases: the moments to book, and each time is a link that dials
-the restaurant's phone number as Resy lists it. Hourly snapshots exist so that list
-is never more than an hour stale.
+- **Capacity.** A 14-seat counter and a 200-seat room both read 0.90 when 90% is gone.
+  Resy does not disclose seat counts; slot quantity per table type is visible only
+  through a per-venue endpoint too costly to poll hourly.
+- **Fill speed.** How fast boxes disappear after release is a stronger demand signal
+  than how many are gone at one moment. Hourly snapshots and the `fct_fill_speed`
+  model exist for this; there is not yet enough history to use it.
+- **Release policy.** A venue that releases tables 14 days out looks emptier at 21 days
+  than one releasing at 30. The verification day assumes 21 is enough.
+- **Prime time.** 19:00 to 20:45 (Resy's own band) going first means more than 17:00
+  going first. Unweighted today.
+- **Churn.** Boxes that reappear are cancellations; their rate says something about
+  demand and about where to find a table.
+- **Party size interaction.** Two-tops and four-tops are different inventories.
+- **Calendar.** Holidays and events skew any single week.
+- **Demand outside Resy.** Walk-ins, phone bookings, and other platforms are invisible.
 
-## Scoring is applied when you read, not when you ingest
+We are not domain experts in restaurant yield. The current score is a defensible
+first cut, not a finished metric. Treat rankings as a shortlist to verify, and expect
+the definition to change as the history accumulates and we learn which of the inputs
+above actually move it.
 
-A run stores the raw observation for each (venue, night, party size): every service
-window Resy reports and every open slot time with its seating area. Service (dinner,
-lunch, brunch, all), grid size (30 or 15 minutes), and the minimum nights are query
-parameters, so the same run can be read as "dinner for two on a 30-minute grid" or
-"lunch for four on a 15-minute grid" without touching Resy again. Party size is the
-one thing that has to be chosen at ingestion: every Resy availability endpoint
-requires it and applies Resy's own table assignment, so there is no disclosed table
-inventory from which other sizes could be derived. A run can ingest several sizes at
-the cost of two requests per size per day.
+## Known judgment calls
 
-## Snapshots and change tracking
-
-The book changes constantly, so every run is a snapshot with a timestamp, and the
-store is slowly-changing-dimension type 2. Resy has no "changed since" endpoint,
-so each run re-reads the full state (two pages per day per party size, about 16
-requests with a two-second gap). The API process runs one every hour by default
-(`RUN_INTERVAL_MINUTES`). What is stored is only change: a venue's descriptive
-attributes and each (venue, night, party size) raw observation get a new row only
-when their hash differs from the current row; otherwise the current row's
-`last_seen_run_id` is bumped. A row is valid for run R when
-`first_run_id <= R <= last_seen_run_id`, which is how results are computed as of
-any past run. Ratings, which move every run, are kept per run outside the hash.
-`GET /api/venues/{id}/history` exposes the versions.
-
-## Limitations and judgment calls
-
-- The seating window comes from the "notify me" range. If a restaurant's real last
-  seating differs from that range the box count is off by one at the edges.
-- A far-out check at 21 days assumes inventory is released at least three weeks
-  ahead. A restaurant that releases only 14 days ahead and is sold out all week
-  would be excluded as "no inventory" rather than scored 1.00.
-- Some venues carry Resy's San Francisco location code but sit in Berkeley or
-  Oakland (Chez Panisse, Belotti). They are kept because the exercise is "on Resy
-  in San Francisco" as Resy defines it; a city-limits filter is one line if wanted.
-- Dinner is the default reading. Lunch and brunch are stored and can be scored with `service=`.
-- One snapshot says nothing about fill speed. Daily runs against the same store
-  would, since each night's state history is kept.
+- The window comes from Resy's "notify me" range; the last box may be a last-seating
+  edge case.
+- Chez Panisse and Belotti are outside city limits but carry Resy's SF location code.
+  Kept; a city-limits filter is one line.
+- Rating letters (S to F) are cut relative to the SF Resy distribution, whose median is
+  4.70. They are context, not an input, and flagged for their own evaluation.
