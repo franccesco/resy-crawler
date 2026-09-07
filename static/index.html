@@ -54,6 +54,7 @@
   .nights div.na{background:repeating-linear-gradient(135deg,var(--color-neutral-300) 0 3px,transparent 3px 6px)}
   .num{text-align:right;font-variant-numeric:tabular-nums}
   .legend{display:flex;gap:var(--space-4);flex-wrap:wrap;padding:var(--space-3) 0;font-size:12px}
+  .toolbar .legend{padding:0;gap:var(--space-3);margin:0 auto}
   .legend span{display:inline-flex;gap:6px;align-items:center}
   .legend i{width:12px;height:12px;display:inline-block;border:1px solid var(--color-divider)}
   .sub{font-size:12px}
@@ -126,6 +127,12 @@
       <div class="tabs">
         <a href="#results" data-tab="scored" class="on">Scored <span class="text-muted" id="t-scored"></span></a>
         <a href="#results" data-tab="excluded">Excluded <span class="text-muted" id="t-excl"></span></a>
+      </div>
+      <div class="legend text-muted" id="legend">
+        <span><i style="background:var(--color-accent)"></i>All half-hours taken</span>
+        <span><i style="background:color-mix(in srgb, var(--color-accent) 50%, var(--color-surface))"></i>Half taken</span>
+        <span><i style="background:var(--color-surface)"></i>Wide open</span>
+        <span><i style="background:repeating-linear-gradient(135deg,var(--color-neutral-300) 0 3px,transparent 3px 6px)"></i>No dinner window</span>
       </div>
       <div style="display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap">
         <input class="input" id="q" placeholder="Search name, neighborhood, cuisine" style="width:260px">

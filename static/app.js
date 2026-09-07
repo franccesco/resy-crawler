@@ -144,13 +144,7 @@ function renderTable() {
         <td class="num text-muted">${esc(r.price || '—')}</td>
       </tr>`).join('')}
       </tbody></table>
-      <div class="legend text-muted">
-        <span><i style="background:var(--color-accent)"></i>All half-hours taken</span>
-        <span><i style="background:color-mix(in srgb, var(--color-accent) 50%, var(--color-surface))"></i>Half taken</span>
-        <span><i style="background:var(--color-surface)"></i>Wide open</span>
-        <span><i class="na" style="background:repeating-linear-gradient(135deg,var(--color-neutral-300) 0 3px,transparent 3px 6px)"></i>No dinner window that night</span>
-        <span style="margin-left:auto">Showing ${rows.length} of ${R.scored} · hover a box or a column name for details</span>
-      </div>`;
+      <div class="legend text-muted"><span style="margin-left:auto">Showing ${rows.length} of ${R.scored} · hover a box or a column name for details</span></div>`;
   } else {
     const label = { closed: 'Closed', other_platform: 'Other platform', events_only: 'Events only', no_dinner_service: 'No dinner service', no_inventory: 'No inventory', insufficient_data: 'Insufficient data' };
     $('results-body').innerHTML = `
