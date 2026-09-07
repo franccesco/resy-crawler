@@ -16,7 +16,6 @@ const fmtTs = (iso) => new Date(iso).toLocaleString(undefined, { month: 'short',
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 /* ---------------- Hover cards ---------------- */
-const INFO = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>';
 const hc = $('hovercard');
 function showCard(el) {
   hc.innerHTML = el.dataset.hc; hc.hidden = false;
@@ -30,7 +29,7 @@ document.addEventListener('mouseover', (e) => { const el = e.target.closest('[da
 document.addEventListener('mouseout', (e) => { const el = e.target.closest('[data-hc]'); if (el && !el.contains(e.relatedTarget)) hc.hidden = true; });
 document.addEventListener('focusin', (e) => { const el = e.target.closest('[data-hc]'); if (el) showCard(el); });
 document.addEventListener('focusout', () => { hc.hidden = true; });
-const th = (label, help, cls = '', width = '') => `<th class="${cls}" ${width ? `style="width:${width}"` : ''}><span class="hint" data-hc="${esc(help)}" tabindex="0">${label}${INFO}</span></th>`;
+const th = (label, help, cls = '', width = '') => `<th class="${cls}" ${width ? `style="width:${width}"` : ''}><span class="hint" data-hc="${esc(help)}" tabindex="0">${label}</span></th>`;
 const COL = {
   rank: '<b>#</b>Rank by score, highest first. Ties break on total taken half-hours.',
   venue: '<b>Restaurant</b>Name links to the Resy page. Neighborhood and cuisine are as Resy lists them.',
