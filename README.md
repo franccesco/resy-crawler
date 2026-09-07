@@ -1,5 +1,7 @@
 # resy-busyness
 
+[![CI](https://github.com/franccesco/resy-crawler/actions/workflows/ci.yml/badge.svg)](https://github.com/franccesco/resy-crawler/actions/workflows/ci.yml)
+
 How booked is each San Francisco restaurant on Resy for a party of two. A FastAPI
 service plus a small UI: start a run, watch the requests, read the ranked table.
 The scoring is written up in [METHODOLOGY.md](METHODOLOGY.md).
@@ -104,6 +106,18 @@ Output: `data/sf_venues.csv` and `data/sf_venues.json`, plus a table on stdout.
 resy_id, name, neighborhood, cuisine, price ($–$$$$), rating_avg, rating_count,
 phone, lat, lng, locality, location_code, max_party_size, global_dining_access,
 collections, url_slug, url, source_strategy.
+
+## CI
+
+GitHub Actions runs on every push and pull request (`.github/workflows/ci.yml`):
+
+- **Lint, types, tests**: `ruff check`, `ruff format --check`, `basedpyright` over the
+  package, tests and analytics, then `pytest`.
+- **dbt build and cross-check**: seeds a synthetic store with
+  `analytics/seed_fixture.py` (no Resy calls), runs `dbt build` against it, then
+  `analytics/crosscheck.py` compares every scored night with the Python scoring.
+
+Python is pinned to 3.14 in `.python-version`; `uv` installs it in CI.
 
 ## Follow-ups
 

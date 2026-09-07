@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, types, tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv python install
+      - run: uv sync --dev
+      - name: ruff check
+        run: uv run ruff check .
+      - name: ruff format
+        run: uv run ruff format --check .
+      - name: basedpyright
+        run: uv run basedpyright resy_busyness tests analytics
+      - name: pytest
+        run: uv run pytest -q
+
+  analytics:
+    name: dbt build and cross-check
+    runs-on: ubuntu-latest
+    env:
+      DB_PATH: data/ci.sqlite
+      RESY_DB_PATH: data/ci.sqlite
+      RESY_ANALYTICS_DB: data/ci.duckdb
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv python install
+      - run: uv sync --dev
+      - name: Seed a synthetic store
+        run: uv run python analytics/seed_fixture.py
+      - name: dbt build
+        run: uv run dbt build --project-dir analytics --profiles-dir analytics
+      - name: Cross-check dbt against the Python scoring
+        run: uv run python analytics/crosscheck.py
