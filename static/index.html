@@ -16,9 +16,19 @@
   .screen{padding:var(--space-8) var(--space-6)}
   .run-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:var(--space-6);border-bottom:2px solid var(--color-divider)}
   .params{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--color-divider);margin-top:var(--space-6)}
-  .params > div{padding:var(--space-3) var(--space-3) var(--space-3) 0;border-right:1px solid var(--color-divider)}
+  .params > div{padding:var(--space-4) var(--space-4);border-right:1px solid var(--color-divider)}
+  .params > div:first-child{padding-left:0}
   .params > div:last-child{border-right:0}
-  .params .input{width:110px;margin-top:4px}
+  .params .input{width:110px;margin-top:6px}
+  .hint{border-bottom:1px dotted color-mix(in srgb, var(--color-text) 45%, transparent);cursor:help}
+  .hint svg{display:inline-block;vertical-align:-2px;margin-left:4px;opacity:.6}
+  .hovercard{position:fixed;z-index:50;max-width:300px;padding:var(--space-3);background:var(--color-surface);border:1px solid var(--color-divider);box-shadow:var(--shadow-md);font-size:12px;line-height:1.5;pointer-events:none}
+  .hovercard b{display:block;font-family:var(--font-heading);font-weight:800;font-size:13px;margin-bottom:4px}
+  .hovercard .mono{font-family:ui-monospace,Menlo,monospace;font-size:11px}
+  .hovercard .muted{color:color-mix(in srgb, var(--color-text) 60%, transparent);margin-top:6px}
+  .table th.num{text-align:right}
+  .table th .hint{white-space:nowrap}
+  .nights div{cursor:help}
   .counters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:var(--space-6);border-top:2px solid var(--color-divider);border-bottom:2px solid var(--color-divider)}
   .counters > div{padding:var(--space-3) 0}
   .bar{height:12px;background:var(--color-surface);margin:var(--space-2) 0 var(--space-1);border:1px solid var(--color-divider)}
@@ -72,9 +82,9 @@
       <h1 style="max-width:14ch;margin-bottom:var(--space-4)">Reading San Francisco for a party of 2.</h1>
       <p class="text-muted" style="max-width:52ch">One request per page of Resy's venue search, for each of the next dinner nights plus one far-out verification day. Every venue's seating window and open tables are recorded per night; only changes are stored.</p>
       <form id="run-form" class="params">
-        <div><label class="kicker text-muted" for="party">Party size</label><input class="input" id="party" type="number" min="1" max="20" value="2"></div>
-        <div><label class="kicker text-muted" for="days">Nights</label><input class="input" id="days" type="number" min="1" max="30" value="7"></div>
-        <div><label class="kicker text-muted" for="verify">Verify day (+N)</label><input class="input" id="verify" type="number" min="8" max="60" value="21"></div>
+        <div><label class="kicker text-muted" for="party"><span class="hint" data-hc="<b>Party size</b>How many guests the table is for. Resy reports seating windows and open tables per party size, so the whole score is specific to this number. Two matches the question: how hard is a table for two?"><span>Party size</span></span></label><input class="input" id="party" type="number" min="1" max="20" value="2"></div>
+        <div><label class="kicker text-muted" for="days"><span class="hint" data-hc="<b>Nights</b>How many consecutive dinner nights to read, starting tomorrow (Pacific time). Each night is two requests to Resy. Seven gives one of each weekday and stays inside the horizon where nearly every restaurant has released its tables."><span>Nights</span></span></label><input class="input" id="days" type="number" min="1" max="30" value="7"></div>
+        <div><label class="kicker text-muted" for="verify"><span class="hint" data-hc="<b>Verify day (+N)</b>One extra day this many days out, read once. A venue with zero open tables on every night of the week is checked here: open tables three weeks out prove it is genuinely sold out and it is scored 1.00; still nothing means Resy holds no real inventory for it and it is excluded instead."><span>Verify day (+N)</span></span></label><input class="input" id="verify" type="number" min="8" max="60" value="21"></div>
       </form>
       <div style="display:flex;gap:var(--space-2);margin-top:var(--space-6)">
         <button type="button" class="btn btn-primary" id="start">Start run</button>
@@ -126,6 +136,7 @@
     <div id="results-body"></div>
   </section>
 </div>
+<div id="hovercard" class="hovercard" hidden></div>
 <script src="/static/app.js"></script>
 </body>
 </html>
